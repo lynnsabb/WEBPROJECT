@@ -118,7 +118,9 @@ export default function Navbar() {
               to="/enrollments"
               className={({ isActive }) =>
                 `text-sm font-medium ${
-                  isActive ? "text-black" : "text-gray-600 hover:text-black"
+                  isActive 
+                    ? "text-black dark:text-white" 
+                    : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
                 }`
               }
             >
@@ -132,7 +134,9 @@ export default function Navbar() {
               to="/manage"
               className={({ isActive }) =>
                 `text-sm font-medium ${
-                  isActive ? "text-black" : "text-gray-600 hover:text-black"
+                  isActive 
+                    ? "text-black dark:text-white" 
+                    : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
                 }`
               }
             >

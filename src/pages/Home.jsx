@@ -272,59 +272,86 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-800 dark:via-indigo-800 dark:to-purple-800 text-white overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-800/20 to-purple-800/20"></div>
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30"></div>
-        <div className="relative max-w-7xl mx-auto px-4 py-20 md:py-32">
-          <div className="max-w-3xl">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
-              Empower Your Learning Journey
+      <section className="relative bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 dark:from-indigo-800 dark:via-purple-800 dark:to-indigo-900 text-white overflow-hidden">
+        {/* Animated gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-700/50 via-purple-600/40 to-indigo-800/50 dark:from-indigo-900/60 dark:via-purple-900/50 dark:to-indigo-950/60"></div>
+        
+        {/* Subtle pattern overlay */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30"></div>
+        
+        {/* Decorative circles */}
+        <div className="absolute top-20 right-10 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl"></div>
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl"></div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 py-24 md:py-36">
+          <div className="max-w-4xl">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-sm font-medium text-white/90 mb-6">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              Free Online Learning Platform
+            </div>
+            
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-6 leading-tight tracking-tight">
+              Empower Your
+              <span className="block bg-gradient-to-r from-white via-purple-100 to-indigo-100 bg-clip-text text-transparent">
+                Learning Journey
+              </span>
             </h1>
-            <p className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed">
-              Explore Free Courses and Learn Anytime, Anywhere.
+            <p className="text-xl md:text-2xl text-white/90 dark:text-white/80 mb-10 leading-relaxed max-w-2xl">
+              Explore Free Courses and Learn Anytime, Anywhere. Join thousands of learners transforming their careers.
             </p>
             <div className="flex flex-col sm:flex-row gap-4">
-  <Link
-    to="/courses"
-    className="inline-flex items-center justify-center px-8 py-4 bg-white text-indigo-600 font-semibold rounded-xl hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
-  >
-    Explore Courses
-  </Link>
+              <Link
+                to="/courses"
+                className="group inline-flex items-center justify-center px-8 py-4 bg-white text-indigo-600 dark:text-indigo-700 font-semibold rounded-2xl hover:bg-indigo-50 dark:hover:bg-gray-50 transition-all duration-300 shadow-2xl hover:shadow-indigo-500/50 hover:scale-105 transform"
+              >
+                <span>Explore Courses</span>
+                <IconArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+              </Link>
 
-  {isAuthenticated ? (
-    <Link
-      to={user?.role === "instructor" ? "/manage" : "/enrollments"}
-      className="inline-flex items-center justify-center px-8 py-4 bg-green-600 text-white font-semibold rounded-xl hover:bg-green-700 transition-all duration-300 border-2 border-green-300"
-    >
-      {user?.role === "instructor"
-        ? "Go to Manage Courses"
-        : "Go to My Learning"}
-    </Link>
-  ) : (
-    <Link
-      to="/login"
-      className="inline-flex items-center justify-center px-8 py-4 bg-indigo-700 text-white font-semibold rounded-xl hover:bg-indigo-800 transition-all duration-300 border-2 border-indigo-400"
-    >
-      Sign In
-    </Link>
-  )}
-</div>
-
+              {isAuthenticated ? (
+                <Link
+                  to={user?.role === "instructor" ? "/manage" : "/enrollments"}
+                  className="group inline-flex items-center justify-center px-8 py-4 bg-white/10 backdrop-blur-md border-2 border-white/30 text-white font-semibold rounded-2xl hover:bg-white/20 hover:border-white/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 transform"
+                >
+                  <span>{user?.role === "instructor" ? "Go to Manage Courses" : "Go to My Learning"}</span>
+                  <IconArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              ) : (
+                <Link
+                  to="/login"
+                  className="group inline-flex items-center justify-center px-8 py-4 bg-white/10 backdrop-blur-md border-2 border-white/30 text-white font-semibold rounded-2xl hover:bg-white/20 hover:border-white/50 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 transform"
+                >
+                  <span>Sign In</span>
+                  <IconArrowRight className="ml-2 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              )}
+            </div>
           </div>
         </div>
+        
+        {/* Smooth transition curve */}
+        <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-b from-transparent via-white/5 to-white dark:via-gray-900/5 dark:to-gray-900"></div>
       </section>
 
       {/* Stats Banner Section */}
-      <section className="bg-indigo-600 dark:bg-indigo-800 text-white py-8">
+      <section className="relative -mt-20 z-10">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {platformStats.map((stat, index) => (
-              <div key={index} className="text-center">
-                <div className="flex justify-center mb-2">
-                  <DynamicIcon iconName={stat.icon} className="text-indigo-200" />
+              <div 
+                key={index} 
+                className="group relative bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-2xl p-6 border border-gray-200/50 dark:border-gray-700/50 shadow-lg hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              >
+                <div className="flex flex-col items-center text-center">
+                  <div className="mb-3 p-3 bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-indigo-900/40 dark:to-purple-900/40 rounded-xl group-hover:scale-110 transition-transform duration-300">
+                    <DynamicIcon iconName={stat.icon} className="text-indigo-600 dark:text-indigo-400 w-6 h-6" />
+                  </div>
+                  <div className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-1 bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400 bg-clip-text text-transparent">
+                    {stat.value}
+                  </div>
+                  <div className="text-sm font-medium text-gray-600 dark:text-gray-300">{stat.label}</div>
                 </div>
-                <div className="text-2xl md:text-3xl font-bold mb-1">{stat.value}</div>
-                <div className="text-sm text-indigo-100">{stat.label}</div>
               </div>
             ))}
           </div>
@@ -340,8 +367,8 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {howItWorksSteps.map((step, index) => (
             <div key={index} className="text-center">
-              <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">
-                <DynamicIcon iconName={step.icon} className="text-indigo-600" />
+              <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/40 dark:to-purple-900/30 rounded-full mb-4 shadow-sm">
+                <DynamicIcon iconName={step.icon} className="text-indigo-600 dark:text-indigo-400" />
               </div>
               <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{step.title}</h3>
               <p className="text-gray-600 dark:text-gray-300">{step.text}</p>
@@ -353,34 +380,34 @@ export default function Home() {
       {/* Platform Highlights / Features Section */}
       <section className="max-w-7xl mx-auto px-4 py-12 md:py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Why Choose LearnHub?
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Discover what makes our platform the perfect choice for your learning journey
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {whyChooseUsData.map((feature, index) => (
-            <div key={index} className="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-              <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl mb-4 ${
-                feature.icon === 'Graduation' ? 'bg-blue-100' :
-                feature.icon === 'Zap' ? 'bg-purple-100' :
-                feature.icon === 'Puzzle' ? 'bg-indigo-100' :
-                'bg-green-100'
+            <div key={index} className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+              <div className={`inline-flex items-center justify-center w-14 h-14 rounded-xl mb-4 shadow-sm ${
+                feature.icon === 'Graduation' ? 'bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-900/40 dark:to-indigo-900/30' :
+                feature.icon === 'Zap' ? 'bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/40 dark:to-pink-900/30' :
+                feature.icon === 'Puzzle' ? 'bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/40 dark:to-purple-900/30' :
+                'bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-900/40 dark:to-emerald-900/30'
               }`}>
                 <DynamicIcon 
                   iconName={feature.icon} 
                   className={
-                    feature.icon === 'Graduation' ? 'text-blue-600' :
-                    feature.icon === 'Zap' ? 'text-purple-600' :
-                    feature.icon === 'Puzzle' ? 'text-indigo-600' :
-                    'text-green-600'
+                    feature.icon === 'Graduation' ? 'text-blue-600 dark:text-blue-400' :
+                    feature.icon === 'Zap' ? 'text-purple-600 dark:text-purple-400' :
+                    feature.icon === 'Puzzle' ? 'text-indigo-600 dark:text-indigo-400' :
+                    'text-green-600 dark:text-green-400'
                   } 
                 />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{feature.title}</h3>
-              <p className="text-gray-600">{feature.description}</p>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
+              <p className="text-gray-600 dark:text-gray-300">{feature.description}</p>
             </div>
           ))}
         </div>
@@ -401,7 +428,7 @@ export default function Home() {
             </div>
             <Link
               to="/courses"
-              className="inline-flex items-center mt-4 md:mt-0 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all duration-300"
+              className="inline-flex items-center mt-4 md:mt-0 px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-purple-700 dark:hover:from-indigo-600 dark:hover:to-purple-600 transition-all duration-300 shadow-md hover:shadow-lg"
             >
               View All Courses
               <IconArrowRight className="ml-2" />
@@ -411,13 +438,13 @@ export default function Home() {
           {/* Search Bar */}
           <div className="mb-8 max-w-md">
             <div className="relative">
-              <IconSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <IconSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
               <input
                 type="text"
                 placeholder="Search for a course, instructor, or topic..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500"
               />
             </div>
           </div>
@@ -425,46 +452,46 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {loading ? (
               <div className="col-span-full text-center py-12">
-                <p className="text-gray-500 text-lg">Loading courses...</p>
+                <p className="text-gray-500 dark:text-gray-400 text-lg">Loading courses...</p>
               </div>
             ) : filteredPopularCourses.length > 0 ? (
               filteredPopularCourses.map((course) => (
-                <div key={course._id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
-                  <div className="relative h-48 overflow-hidden bg-gradient-to-br from-purple-100 to-blue-100">
+                <div key={course._id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg dark:hover:shadow-xl transition-all duration-300 hover:-translate-y-1">
+                  <div className="relative h-48 overflow-hidden bg-gradient-to-br from-purple-100 dark:from-purple-900/30 to-blue-100 dark:to-blue-900/30">
                     <img
                       src={course.image}
                       alt={course.title}
                       className="w-full h-full object-cover"
                     />
-                    <span className="absolute top-4 right-4 px-3 py-1 bg-green-500 text-white text-sm font-medium rounded-full">
+                    <span className="absolute top-4 right-4 px-3 py-1 bg-green-500 dark:bg-green-600 text-white text-sm font-medium rounded-full">
                       Free Course
                     </span>
                   </div>
                   <div className="p-6">
-                    <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full mb-3">
+                    <span className="inline-block px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-full mb-3">
                       {course.category}
                     </span>
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">{course.title}</h3>
-                    <p className="text-sm text-gray-500 mb-4">
-                      Instructor: <span className="font-medium text-gray-800">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                      Instructor: <span className="font-medium text-gray-800 dark:text-gray-200">
                         {typeof course.instructor === 'string' 
                           ? course.instructor 
                           : course.instructor?.name || 'Unknown'}
                       </span>
                     </p>
-                    <div className="flex items-center gap-4 text-sm text-gray-600 border-t border-gray-200 pt-4 mb-4">
+                    <div className="flex items-center gap-4 text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
                       <div className="flex items-center gap-1">
                         <IconStar className="text-yellow-400" />
-                        <span className="font-semibold text-gray-900">{course.rating}</span>
+                        <span className="font-semibold text-gray-900 dark:text-white">{course.rating}</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        <IconUsers />
-                        <span>{(course.students || 0).toLocaleString()}</span>
+                        <IconUsers className="text-gray-600 dark:text-gray-400" />
+                        <span className="text-gray-600 dark:text-gray-400">{(course.students || 0).toLocaleString()}</span>
                       </div>
                     </div>
                     <Link
                       to={`/courses/${course._id}`}
-                      className="block w-full text-center px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                      className="block w-full text-center px-4 py-2 bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 text-white font-medium rounded-lg hover:from-indigo-700 hover:to-purple-700 dark:hover:from-indigo-600 dark:hover:to-purple-600 transition-all duration-300 shadow-sm hover:shadow-md"
                     >
                       View Details
                     </Link>
@@ -473,7 +500,7 @@ export default function Home() {
               ))
             ) : (
               <div className="col-span-full text-center py-12">
-                <p className="text-gray-500 text-lg">No courses found matching your search.</p>
+                <p className="text-gray-500 dark:text-gray-400 text-lg">No courses found matching your search.</p>
               </div>
             )}
           </div>
@@ -481,38 +508,38 @@ export default function Home() {
       </section>
 
       {/* Learning Paths Section */}
-      <section className="bg-gray-50 py-12 md:py-16">
+      <section className="bg-white dark:bg-gray-900 py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Learning Paths</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">Follow structured paths to master your skills</p>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">Learning Paths</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Follow structured paths to master your skills</p>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {learningPaths.map((path, index) => {
               const pathCourses = getPathCourses(path.courses);
               return (
-                <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg transition-all duration-300">
+                <div key={index} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 hover:shadow-lg dark:hover:shadow-xl transition-all duration-300">
                   <div className={`inline-block px-4 py-2 rounded-lg font-semibold mb-4 ${
-                    path.level === 'Beginner' ? 'bg-green-100 text-green-700' :
-                    path.level === 'Intermediate' ? 'bg-blue-100 text-blue-700' :
-                    'bg-purple-100 text-purple-700'
+                    path.level === 'Beginner' ? 'bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-900/40 dark:to-emerald-900/30 text-green-700 dark:text-green-400' :
+                    path.level === 'Intermediate' ? 'bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/40 dark:to-indigo-900/30 text-blue-700 dark:text-blue-400' :
+                    'bg-gradient-to-r from-purple-50 to-pink-50 dark:from-purple-900/40 dark:to-pink-900/30 text-purple-700 dark:text-purple-400'
                   }`}>
                     {path.level} Path
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">{path.description}</h3>
-                  <p className="text-gray-600 mb-4">{pathCourses.length} courses</p>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{path.description}</h3>
+                  <p className="text-gray-600 dark:text-gray-300 mb-4">{pathCourses.length} courses</p>
                   <div className="space-y-2">
                     {pathCourses.slice(0, 3).map((course) => (
                       <Link
                         key={course._id}
                         to={`/courses/${course._id}`}
-                        className="block text-sm text-indigo-600 hover:text-indigo-700"
+                        className="block text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 transition-colors"
                       >
                         • {course.title}
                       </Link>
                     ))}
                     {pathCourses.length > 3 && (
-                      <p className="text-sm text-gray-500">+{pathCourses.length - 3} more courses</p>
+                      <p className="text-sm text-gray-500 dark:text-gray-400">+{pathCourses.length - 3} more courses</p>
                     )}
                   </div>
                 </div>
@@ -525,10 +552,10 @@ export default function Home() {
       {/* Instructor Highlights Section */}
       <section className="max-w-7xl mx-auto px-4 py-12 md:py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
             Meet Our Instructors
           </h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
             Learn from industry experts with years of real-world experience
           </p>
         </div>
@@ -536,21 +563,21 @@ export default function Home() {
           {featuredInstructors.map((instructor) => (
             <div
               key={instructor.id}
-              className="bg-white p-6 rounded-xl border border-gray-200 hover:shadow-lg transition-all duration-300 hover:-translate-y-1 text-center"
+              className="bg-white dark:bg-gray-800 p-6 rounded-xl border border-gray-200 dark:border-gray-700 hover:shadow-lg dark:hover:shadow-xl transition-all duration-300 hover:-translate-y-1 text-center"
             >
               <div className="mb-4">
                 <img
                   src={instructor.photo}
                   alt={instructor.name}
-                  className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-indigo-100"
+                  className="w-24 h-24 rounded-full mx-auto object-cover border-4 border-indigo-100 dark:border-indigo-900/50"
                 />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-1">{instructor.name}</h3>
-              <p className="text-indigo-600 font-medium mb-2">{instructor.specialty}</p>
-              <p className="text-sm text-gray-600 mb-4">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-1">{instructor.name}</h3>
+              <p className="text-indigo-600 dark:text-indigo-400 font-medium mb-2">{instructor.specialty}</p>
+              <p className="text-sm text-gray-600 dark:text-gray-300 mb-4">
                 {instructor.yearsOfExperience} years of experience
               </p>
-              <div className="flex items-center justify-center gap-4 text-sm text-gray-500 pt-4 border-t border-gray-200">
+              <div className="flex items-center justify-center gap-4 text-sm text-gray-500 dark:text-gray-400 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <span>{instructor.courses} Courses</span>
                 <span>•</span>
                 <span>{instructor.students.toLocaleString()} Students</span>
@@ -561,42 +588,42 @@ export default function Home() {
       </section>
 
       {/* Testimonials Carousel Section */}
-      <section className="bg-gray-50 py-12 md:py-16">
+      <section className="bg-white dark:bg-gray-900 py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
               What Our Students Say
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
               Real feedback from learners who transformed their careers
             </p>
           </div>
           <div className="relative max-w-4xl mx-auto">
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-8 md:p-12">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 p-8 md:p-12">
               <div className="flex items-center gap-1 mb-4">
                 {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (
                   <IconStar key={i} className="text-yellow-400" />
                 ))}
               </div>
-              <p className="text-gray-700 mb-6 italic text-lg">
+              <p className="text-gray-700 dark:text-gray-200 mb-6 italic text-lg">
                 "{testimonials[currentTestimonial].quote}"
               </p>
-              <div className="flex items-center gap-4 pt-4 border-t border-gray-200">
+              <div className="flex items-center gap-4 pt-4 border-t border-gray-200 dark:border-gray-700">
                 <img
                   src={testimonials[currentTestimonial].avatar}
                   alt={testimonials[currentTestimonial].name}
-                  className="w-16 h-16 rounded-full object-cover"
+                  className="w-16 h-16 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700"
                 />
                 <div>
-                  <p className="font-semibold text-gray-900 text-lg">{testimonials[currentTestimonial].name}</p>
-                  <p className="text-sm text-gray-600">{testimonials[currentTestimonial].role}</p>
+                  <p className="font-semibold text-gray-900 dark:text-white text-lg">{testimonials[currentTestimonial].name}</p>
+                  <p className="text-sm text-gray-600 dark:text-gray-400">{testimonials[currentTestimonial].role}</p>
                 </div>
               </div>
             </div>
             <div className="flex items-center justify-center gap-4 mt-6">
               <button
                 onClick={() => setCurrentTestimonial((prev) => (prev - 1 + testimonials.length) % testimonials.length)}
-                className="p-2 rounded-full bg-white border border-gray-300 hover:bg-gray-50 transition-colors"
+                className="p-2 rounded-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-300"
               >
                 <IconChevronLeft />
               </button>
@@ -606,14 +633,14 @@ export default function Home() {
                     key={index}
                     onClick={() => setCurrentTestimonial(index)}
                     className={`w-2 h-2 rounded-full transition-colors ${
-                      index === currentTestimonial ? 'bg-indigo-600' : 'bg-gray-300'
+                      index === currentTestimonial ? 'bg-indigo-600 dark:bg-indigo-400' : 'bg-gray-300 dark:bg-gray-600'
                     }`}
                   />
                 ))}
               </div>
               <button
                 onClick={() => setCurrentTestimonial((prev) => (prev + 1) % testimonials.length)}
-                className="p-2 rounded-full bg-white border border-gray-300 hover:bg-gray-50 transition-colors"
+                className="p-2 rounded-full bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors text-gray-700 dark:text-gray-300"
               >
                 <IconChevronRight />
               </button>
@@ -623,11 +650,11 @@ export default function Home() {
       </section>
       {/* Call to Action / Join Section */}
       <section className="max-w-7xl mx-auto px-4 py-12 md:py-16">
-        <div className="bg-gradient-to-r from-indigo-600 to-purple-600 rounded-2xl p-8 md:p-12 text-center text-white">
+        <div className="bg-gradient-to-br from-indigo-500 via-purple-500 to-indigo-600 dark:from-indigo-700 dark:via-purple-700 dark:to-indigo-800 rounded-2xl p-8 md:p-12 text-center text-white shadow-2xl">
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
             Ready to Level Up?
           </h2>
-          <p className="text-xl text-indigo-100 mb-8 max-w-2xl mx-auto">
+          <p className="text-xl text-white/90 dark:text-white/80 mb-8 max-w-2xl mx-auto">
             Join our community of learners today and start your journey towards mastery.
           </p>
           <Link
@@ -638,7 +665,7 @@ export default function Home() {
         : "/enrollments"
       : "/register"
   }
-  className="inline-flex items-center px-8 py-4 bg-white text-indigo-600 font-semibold rounded-xl hover:bg-blue-50 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+  className="inline-flex items-center px-8 py-4 bg-white/95 dark:bg-white text-indigo-600 dark:text-indigo-700 font-semibold rounded-xl hover:bg-white dark:hover:bg-gray-50 transition-all duration-300 shadow-xl hover:shadow-2xl transform hover:-translate-y-1"
 >
   {isAuthenticated ? "Go to Dashboard" : "Get Started"}
   <IconArrowRight className="ml-2" />
@@ -648,11 +675,11 @@ export default function Home() {
       </section>
 
       {/* Newsletter / Community Join Section */}
-      <section className="bg-indigo-50 py-12 md:py-16">
+      <section className="bg-white dark:bg-gray-900 py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="bg-white rounded-2xl p-8 md:p-12 text-center shadow-lg">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">{newsletterContent.title}</h2>
-            <p className="text-lg text-gray-600 mb-8 max-w-2xl mx-auto">{newsletterContent.text}</p>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-8 md:p-12 text-center shadow-lg border border-gray-200 dark:border-gray-700">
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">{newsletterContent.title}</h2>
+            <p className="text-lg text-gray-600 dark:text-gray-300 mb-8 max-w-2xl mx-auto">{newsletterContent.text}</p>
             <form onSubmit={handleNewsletterSubmit} className="max-w-md mx-auto flex gap-3">
               <input
                 type="email"
@@ -660,11 +687,11 @@ export default function Home() {
                 onChange={(e) => setNewsletterEmail(e.target.value)}
                 placeholder="Enter your email address"
                 required
-                className="flex-1 px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="flex-1 px-4 py-3 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-gray-400 dark:placeholder-gray-400"
               />
               <button
                 type="submit"
-                className="px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-colors"
+                className="px-6 py-3 bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-500 dark:to-purple-500 text-white font-semibold rounded-xl hover:from-indigo-700 hover:to-purple-700 dark:hover:from-indigo-600 dark:hover:to-purple-600 transition-all duration-300 shadow-md hover:shadow-lg"
               >
                 Subscribe
               </button>

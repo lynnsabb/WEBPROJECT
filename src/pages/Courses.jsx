@@ -118,7 +118,7 @@ export default function CourseCatalog() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <main className="max-w-7xl mx-auto px-6 py-12">
         <div className="mb-12">
           <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">All Courses</h1>
@@ -190,15 +190,15 @@ export default function CourseCatalog() {
         {loading ? (
           <div className="text-center py-16">
             <div className="text-5xl mb-3">⏳</div>
-            <p className="text-gray-500 text-lg">Loading courses...</p>
+            <p className="text-gray-500 dark:text-gray-400 text-lg">Loading courses...</p>
           </div>
         ) : error ? (
           <div className="text-center py-16">
             <div className="text-5xl mb-3">⚠️</div>
-            <p className="text-red-600 text-lg mb-4">{error}</p>
+            <p className="text-red-600 dark:text-red-400 text-lg mb-4">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="inline-flex items-center justify-center rounded-xl bg-black text-white px-4 py-2 hover:bg-black/90"
+              className="inline-flex items-center justify-center rounded-xl bg-black dark:bg-white dark:text-black text-white px-4 py-2 hover:bg-black/90 dark:hover:bg-gray-200 transition-colors"
             >
               Retry
             </button>
@@ -210,7 +210,7 @@ export default function CourseCatalog() {
                 <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer">
 
                   {/* Image + Level Badge */}
-                  <div className="relative h-48 overflow-hidden bg-gradient-to-br from-purple-100 to-blue-100">
+                  <div className="relative h-48 overflow-hidden bg-gradient-to-br from-purple-100 dark:from-purple-900/30 to-blue-100 dark:to-blue-900/30">
                     <img src={course.image} alt={course.title} className="w-full h-full object-cover" />
                     <span className={`absolute top-4 right-4 px-3 py-1 ${getLevelColor(course.level)} text-white text-sm font-medium rounded-full`}>
                       {course.level}
@@ -219,15 +219,15 @@ export default function CourseCatalog() {
 
                   {/* Course Content */}
                   <div className="p-6">
-                    <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full mb-3">
+                    <span className="inline-block px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-full mb-3">
                       {course.category}
                     </span>
 
                     <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{course.title}</h3>
                     <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">{course.description}</p>
 
-                    <p className="text-sm text-gray-500 mb-4">
-                      Instructor: <span className="font-medium text-gray-800">
+                    <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                      Instructor: <span className="font-medium text-gray-800 dark:text-gray-200">
                         {typeof course.instructor === 'string' 
                           ? course.instructor 
                           : course.instructor?.name || 'Unknown'}
@@ -235,20 +235,20 @@ export default function CourseCatalog() {
                     </p>
 
                     {/* Icons: Rating / Students / Duration */}
-                    <div className="flex items-center justify-between text-sm text-gray-600 border-t border-gray-200 pt-3">
+                    <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-3">
                       <div className="flex items-center gap-1">
                         <IconStar className="text-yellow-400" />
-                        <span className="font-semibold text-gray-900">{course.rating}</span>
+                        <span className="font-semibold text-gray-900 dark:text-white">{course.rating}</span>
                       </div>
 
                       <div className="flex items-center gap-1">
-                        <IconUsers />
-                        <span>{(course.students || 0).toLocaleString()}</span>
+                        <IconUsers className="text-gray-600 dark:text-gray-400" />
+                        <span className="text-gray-600 dark:text-gray-400">{(course.students || 0).toLocaleString()}</span>
                       </div>
 
                       <div className="flex items-center gap-1">
-                        <IconClock />
-                        <span>{course.duration}</span>
+                        <IconClock className="text-gray-600 dark:text-gray-400" />
+                        <span className="text-gray-600 dark:text-gray-400">{course.duration}</span>
                       </div>
                     </div>
                   </div>
@@ -258,7 +258,7 @@ export default function CourseCatalog() {
           </div>
         ) : (
           <div className="text-center py-16">
-            <p className="text-gray-500 text-lg">No courses found matching your filters.</p>
+            <p className="text-gray-500 dark:text-gray-400 text-lg">No courses found matching your filters.</p>
           </div>
         )}
       </main>
