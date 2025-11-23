@@ -1,3 +1,4 @@
+//farah
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Protected from "./components/Protected.jsx";
 import Home from "./pages/Home";
@@ -22,7 +23,7 @@ export default function App() {
   const isLessonPage = location.pathname.includes('/learn/');
 
   return (
-    <div className="min-h-screen flex flex-col bg-white text-gray-900">
+    <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
       {!isLessonPage && <Navbar />}
       <main className={`flex-1 ${!isLessonPage ? 'max-w-7xl mx-auto w-full px-4 py-8' : ''}`}>
         <Routes>

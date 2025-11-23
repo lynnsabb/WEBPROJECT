@@ -118,11 +118,11 @@ export default function CourseCatalog() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
       <main className="max-w-7xl mx-auto px-6 py-12">
         <div className="mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-3">All Courses</h1>
-          <p className="text-gray-600 text-lg">
+          <h1 className="text-4xl font-bold text-gray-900 dark:text-white mb-3">All Courses</h1>
+          <p className="text-gray-600 dark:text-gray-300 text-lg">
             {loading ? "Loading courses..." : `Explore our collection of ${courses.length} courses and start learning today`}
           </p>
         </div>
@@ -137,7 +137,7 @@ export default function CourseCatalog() {
               placeholder="Search courses..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black/20"
+              className="w-full pl-10 pr-4 py-3 rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-indigo-500"
             />
           </div>
 
@@ -148,7 +148,7 @@ export default function CourseCatalog() {
               <select
                 value={selectedCategory}
                 onChange={(e) => setSelectedCategory(e.target.value)}
-                className="appearance-none pl-4 pr-10 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black/20 bg-white"
+                className="appearance-none pl-4 pr-10 py-2 rounded-xl border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               >
                 {categories.map(cat => (
                   <option key={cat} value={cat}>{cat}</option>
@@ -162,7 +162,7 @@ export default function CourseCatalog() {
               <select
                 value={selectedLevel}
                 onChange={(e) => setSelectedLevel(e.target.value)}
-                className="appearance-none pl-4 pr-10 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black/20 bg-white"
+                className="appearance-none pl-4 pr-10 py-2 rounded-xl border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               >
                 {levels.map(level => (
                   <option key={level} value={level}>{level}</option>
@@ -176,7 +176,7 @@ export default function CourseCatalog() {
               <select
                 value={selectedSort}
                 onChange={(e) => setSelectedSort(e.target.value)}
-                className="appearance-none pl-4 pr-10 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black/20 bg-white"
+                className="appearance-none pl-4 pr-10 py-2 rounded-xl border border-gray-200 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
               >
                 <option value="Most Popular">Most Popular</option>
                 <option value="Highest Rated">Highest Rated</option>
@@ -207,7 +207,7 @@ export default function CourseCatalog() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {filteredCourses.map(course => (
               <Link key={course._id} to={`/courses/${course._id}`} className="block">
-                <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer">
+                <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer">
 
                   {/* Image + Level Badge */}
                   <div className="relative h-48 overflow-hidden bg-gradient-to-br from-purple-100 to-blue-100">
@@ -223,8 +223,8 @@ export default function CourseCatalog() {
                       {course.category}
                     </span>
 
-                    <h3 className="text-xl font-bold text-gray-900 mb-2">{course.title}</h3>
-                    <p className="text-gray-600 text-sm mb-4 line-clamp-2">{course.description}</p>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{course.title}</h3>
+                    <p className="text-gray-600 dark:text-gray-300 text-sm mb-4 line-clamp-2">{course.description}</p>
 
                     <p className="text-sm text-gray-500 mb-4">
                       Instructor: <span className="font-medium text-gray-800">

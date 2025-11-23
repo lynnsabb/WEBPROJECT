@@ -71,9 +71,9 @@ export default function Login() {
   };
 
   return (
-    <section className="max-w-7xl mx-auto px-4 py-10">
-      <div className="grid place-items-center">
-        <div className="w-full max-w-lg rounded-2xl border bg-white shadow-sm p-6">
+    <section className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center px-4 py-10">
+      <div className="w-full max-w-lg">
+        <div className="rounded-2xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 shadow-lg p-6 md:p-8">
           {/* Logo and Title */}
           <div className="flex items-center gap-3 mb-4">
             <img
@@ -81,11 +81,11 @@ export default function Login() {
               alt="LearnHub Logo"
               className="w-10 h-10 object-contain rounded-lg"
             />
-            <div className="text-xl font-semibold">LearnHub</div>
+            <div className="text-xl font-semibold text-gray-900 dark:text-white">LearnHub</div>
           </div>
 
-          <h1 className="text-2xl font-bold mt-2">Welcome back</h1>
-          <p className="text-gray-600 mt-1">
+          <h1 className="text-2xl font-bold mt-2 text-gray-900 dark:text-white">Welcome back</h1>
+          <p className="text-gray-600 dark:text-gray-400 mt-1">
             Enter your credentials to access your account
           </p>
 
@@ -93,7 +93,7 @@ export default function Login() {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium mb-1"
+                className="block text-sm font-medium mb-1 text-gray-900 dark:text-gray-200"
               >
                 Email
               </label>
@@ -102,7 +102,7 @@ export default function Login() {
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black/20"
+                className="w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20"
                 placeholder="you@example.com"
               />
             </div>
@@ -111,13 +111,13 @@ export default function Login() {
               <div className="flex items-center justify-between mb-1">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium"
+                  className="block text-sm font-medium text-gray-900 dark:text-gray-200"
                 >
                   Password
                 </label>
                 <a
                   href="#"
-                  className="text-sm text-gray-600 hover:underline"
+                  className="text-sm text-gray-600 dark:text-gray-400 hover:underline"
                 >
                   Forgot password?
                 </a>
@@ -127,13 +127,13 @@ export default function Login() {
                 type="password"
                 value={pwd}
                 onChange={(e) => setPwd(e.target.value)}
-                className="w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black/20"
+                className="w-full rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20"
                 placeholder="Enter your password"
               />
             </div>
 
             {err && (
-              <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl p-2">
+              <div className="text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-2">
                 {err}
               </div>
             )}
@@ -141,15 +141,15 @@ export default function Login() {
             <button 
               type="submit"
               disabled={loading}
-              className="w-full rounded-xl bg-black text-white py-2.5 hover:bg-black/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-xl bg-black dark:bg-white dark:text-black text-white py-2.5 hover:bg-black/90 dark:hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed font-medium"
             >
               {loading ? "Signing in..." : "Sign in"}
             </button>
           </form>
 
-          <p className="mt-6 text-sm text-gray-600">
+          <p className="mt-6 text-sm text-gray-600 dark:text-gray-400 text-center">
             Don&apos;t have an account?{" "}
-            <Link to="/register" className="underline">
+            <Link to="/register" className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium">
               Sign up
             </Link>
           </p>

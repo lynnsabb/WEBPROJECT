@@ -1,3 +1,4 @@
+// farah
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
@@ -8,9 +9,35 @@ export default function Register() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [passwordErrors, setPasswordErrors] = useState({
+    length: false,
+    uppercase: false,
+    lowercase: false,
+    number: false,
+    special: false,
+  });
 
-  const onChange = (e) =>
-    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  const validatePassword = (password) => {
+    const errors = {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /[0-9]/.test(password),
+      special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+    };
+    setPasswordErrors(errors);
+    return Object.values(errors).every(Boolean);
+  };
+
+  const onChange = (e) => {
+    const value = e.target.value;
+    setForm((f) => ({ ...f, [e.target.name]: value }));
+    
+    // Validate password in real-time
+    if (e.target.name === "password") {
+      validatePassword(value);
+    }
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -21,6 +48,13 @@ export default function Register() {
     // Validate form fields
     if (!form.name || !form.email || !form.password || !form.role) {
       setError("Please fill in all fields");
+      setLoading(false);
+      return;
+    }
+
+    // Validate password complexity
+    if (!validatePassword(form.password)) {
+      setError("Password does not meet complexity requirements. Please check the requirements below.");
       setLoading(false);
       return;
     }
@@ -148,6 +182,33 @@ export default function Register() {
               onChange={onChange}
               required
             />
+            {form.password && (
+              <div className="mt-2 p-3 bg-gray-50 rounded-lg border border-gray-200">
+                <p className="text-xs font-medium text-gray-700 mb-2">Password Requirements:</p>
+                <div className="space-y-1 text-xs">
+                  <div className={`flex items-center gap-2 ${passwordErrors.length ? 'text-green-600' : 'text-gray-500'}`}>
+                    <span>{passwordErrors.length ? '✓' : '○'}</span>
+                    <span>At least 8 characters</span>
+                  </div>
+                  <div className={`flex items-center gap-2 ${passwordErrors.uppercase ? 'text-green-600' : 'text-gray-500'}`}>
+                    <span>{passwordErrors.uppercase ? '✓' : '○'}</span>
+                    <span>One uppercase letter</span>
+                  </div>
+                  <div className={`flex items-center gap-2 ${passwordErrors.lowercase ? 'text-green-600' : 'text-gray-500'}`}>
+                    <span>{passwordErrors.lowercase ? '✓' : '○'}</span>
+                    <span>One lowercase letter</span>
+                  </div>
+                  <div className={`flex items-center gap-2 ${passwordErrors.number ? 'text-green-600' : 'text-gray-500'}`}>
+                    <span>{passwordErrors.number ? '✓' : '○'}</span>
+                    <span>One number</span>
+                  </div>
+                  <div className={`flex items-center gap-2 ${passwordErrors.special ? 'text-green-600' : 'text-gray-500'}`}>
+                    <span>{passwordErrors.special ? '✓' : '○'}</span>
+                    <span>One special character</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div>

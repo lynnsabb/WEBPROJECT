@@ -270,9 +270,9 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white overflow-hidden">
+      <section className="relative bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 dark:from-blue-800 dark:via-indigo-800 dark:to-purple-800 text-white overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-800/20 to-purple-800/20"></div>
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30"></div>
         <div className="relative max-w-7xl mx-auto px-4 py-20 md:py-32">
@@ -315,7 +315,7 @@ export default function Home() {
       </section>
 
       {/* Stats Banner Section */}
-      <section className="bg-indigo-600 text-white py-8">
+      <section className="bg-indigo-600 dark:bg-indigo-800 text-white py-8">
         <div className="max-w-7xl mx-auto px-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {platformStats.map((stat, index) => (
@@ -334,8 +334,8 @@ export default function Home() {
       {/* How It Works Section */}
       <section className="max-w-7xl mx-auto px-4 py-12 md:py-16">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">How It Works</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">Start learning in 3 simple steps.</p>
+          <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">How It Works</h2>
+          <p className="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Start learning in 3 simple steps.</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {howItWorksSteps.map((step, index) => (
@@ -343,8 +343,8 @@ export default function Home() {
               <div className="inline-flex items-center justify-center w-16 h-16 bg-indigo-100 rounded-full mb-4">
                 <DynamicIcon iconName={step.icon} className="text-indigo-600" />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-2">{step.title}</h3>
-              <p className="text-gray-600">{step.text}</p>
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2">{step.title}</h3>
+              <p className="text-gray-600 dark:text-gray-300">{step.text}</p>
             </div>
           ))}
         </div>
@@ -388,14 +388,14 @@ export default function Home() {
 
       
       {/* Popular Courses Section with Search */}
-      <section className="bg-white py-12 md:py-16">
+      <section className="bg-white dark:bg-gray-900 py-12 md:py-16">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8">
             <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">
+              <h2 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-4">
                 Popular Courses
               </h2>
-              <p className="text-lg text-gray-600">
+              <p className="text-lg text-gray-600 dark:text-gray-300">
                 Start learning with our most highly-rated courses
               </p>
             </div>
@@ -417,7 +417,7 @@ export default function Home() {
                 placeholder="Search for a course, instructor, or topic..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
               />
             </div>
           </div>
@@ -429,7 +429,7 @@ export default function Home() {
               </div>
             ) : filteredPopularCourses.length > 0 ? (
               filteredPopularCourses.map((course) => (
-                <div key={course._id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+                <div key={course._id} className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
                   <div className="relative h-48 overflow-hidden bg-gradient-to-br from-purple-100 to-blue-100">
                     <img
                       src={course.image}
@@ -444,7 +444,7 @@ export default function Home() {
                     <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full mb-3">
                       {course.category}
                     </span>
-                    <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">{course.title}</h3>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">{course.title}</h3>
                     <p className="text-sm text-gray-500 mb-4">
                       Instructor: <span className="font-medium text-gray-800">
                         {typeof course.instructor === 'string' 

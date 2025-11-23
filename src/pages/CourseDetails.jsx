@@ -1,4 +1,5 @@
 // src/pages/CourseDetails.jsx
+//farah
 import { useState, useMemo, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -353,8 +354,19 @@ export default function CourseDetails({ course: courseProp, onBack }) {
             )}
 
             {/* Curriculum */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Course Curriculum</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Course Curriculum</h2>
+                {isEnrolled && course.curriculum && course.curriculum[0]?.topics && course.curriculum[0].topics[0] && (
+                  <Link
+                    to={`/courses/${course._id}/learn/${firstLessonId}`}
+                    className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium flex items-center gap-1"
+                  >
+                    <IconPlayCircle className="w-4 h-4" />
+                    Start Learning
+                  </Link>
+                )}
+              </div>
               {course.curriculum && course.curriculum.length > 0 ? (
                 course.curriculum.map((mod, idx) => {
                   const key = mod.id ?? idx;
@@ -372,13 +384,27 @@ export default function CourseDetails({ course: courseProp, onBack }) {
                         <IconChevronDown className={`text-gray-400 transition-transform ${open ? "rotate-180" : ""}`} />
                       </button>
                       {open && (
-                        <div className="border-t border-gray-200 bg-gray-50">
-                          {(mod.topics || []).map((t, i) => (
-                            <div key={i} className="px-4 py-3 flex items-center justify-between hover:bg-gray-100 transition">
-                              <span className="text-gray-700">{t.title}</span>
-                              {t.duration && <span className="text-sm text-gray-500">{t.duration}</span>}
-                            </div>
-                          ))}
+                        <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                          {(mod.topics || []).map((t, i) => {
+                            const topicId = t.id || `${idx}-${i}`;
+                            return (
+                              <div key={i} className="px-4 py-3 flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-800 transition group">
+                                <span className="text-gray-700 dark:text-gray-300">{t.title}</span>
+                                <div className="flex items-center gap-3">
+                                  {t.duration && <span className="text-sm text-gray-500 dark:text-gray-400">{t.duration}</span>}
+                                  {isEnrolled && (
+                                    <Link
+                                      to={`/courses/${course._id}/learn/${topicId}`}
+                                      className="opacity-0 group-hover:opacity-100 transition-opacity text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300"
+                                      title="Start this lesson"
+                                    >
+                                      <IconPlayCircle className="w-4 h-4" />
+                                    </Link>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
@@ -452,13 +478,20 @@ export default function CourseDetails({ course: courseProp, onBack }) {
                           Already Enrolled
                         </button>
                         {/* START LEARNING BUTTON */}
-                        <Link
-                          to={`/courses/${course._id}/learn/${firstLessonId}`}
-                          className="w-full inline-flex justify-center items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition shadow-lg hover:shadow-xl"
-                        >
-                          <IconPlayCircle />
-                          Start Learning
-                        </Link>
+                        {course.curriculum && course.curriculum[0]?.topics && course.curriculum[0].topics[0] ? (
+                          <Link
+                            to={`/courses/${course._id}/learn/${firstLessonId}`}
+                            className="w-full inline-flex justify-center items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition shadow-lg hover:shadow-xl"
+                          >
+                            <IconPlayCircle />
+                            Start Learning
+                          </Link>
+                        ) : (
+                          <div className="w-full inline-flex justify-center items-center gap-2 px-6 py-3 bg-gray-300 text-gray-600 rounded-lg font-semibold cursor-not-allowed">
+                            <IconPlayCircle />
+                            No Lessons Available
+                          </div>
+                        )}
                       </>
                     ) : (
                       <button
