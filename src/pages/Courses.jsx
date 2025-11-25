@@ -103,8 +103,7 @@ export default function CourseCatalog() {
     }
     if (selectedCategory !== 'All') list = list.filter(c => c.category === selectedCategory);
     if (selectedLevel !== 'All') list = list.filter(c => c.level === selectedLevel);
-    if (selectedSort === 'Highest Rated') list.sort((a, b) => (b.rating || 0) - (a.rating || 0));
-    else list.sort((a, b) => (b.students || 0) - (a.students || 0));
+    list.sort((a, b) => (b.students || 0) - (a.students || 0));
     return list;
   }, [courses, searchQuery, selectedCategory, selectedLevel, selectedSort]);
 
@@ -179,7 +178,6 @@ export default function CourseCatalog() {
                 className="appearance-none pl-4 pr-10 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-black/20 bg-white"
               >
                 <option value="Most Popular">Most Popular</option>
-                <option value="Highest Rated">Highest Rated</option>
               </select>
               <IconChevronDown className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none" />
             </div>
@@ -234,13 +232,8 @@ export default function CourseCatalog() {
                       </span>
                     </p>
 
-                    {/* Icons: Rating / Students / Duration */}
+                    {/* Icons: Students / Duration */}
                     <div className="flex items-center justify-between text-sm text-gray-600 border-t border-gray-200 pt-3">
-                      <div className="flex items-center gap-1">
-                        <IconStar className="text-yellow-400" />
-                        <span className="font-semibold text-gray-900">{course.rating}</span>
-                      </div>
-
                       <div className="flex items-center gap-1">
                         <IconUsers />
                         <span>{(course.students || 0).toLocaleString()}</span>

@@ -60,7 +60,36 @@ export default function Enrollments() {
           }
         );
 
-        setEnrollments(response.data || []);
+        const enrollmentsData = response.data || [];
+        console.log('Fetched enrollments:', enrollmentsData);
+        
+        // Filter out enrollments with missing or invalid course data
+        const validEnrollments = enrollmentsData.filter((enrollment) => {
+          const course = enrollment.courseId || enrollment.course;
+          // Check if course exists and has required fields
+          if (!course) {
+            console.warn('Enrollment missing course:', enrollment._id);
+            return false;
+          }
+          // If courseId is just a string (not populated), skip it
+          if (typeof course === 'string') {
+            console.warn('Enrollment course not populated:', enrollment._id);
+            return false;
+          }
+          // If course object exists but missing critical fields
+          if (!course._id || !course.title) {
+            console.warn('Enrollment course missing required fields:', enrollment._id, course);
+            return false;
+          }
+          return true;
+        });
+        
+        const filteredCount = enrollmentsData.length - validEnrollments.length;
+        if (filteredCount > 0) {
+          console.warn(`${filteredCount} enrollments filtered out due to missing course data`);
+        }
+        
+        setEnrollments(validEnrollments);
       } catch (err) {
         if (err.response && err.response.data) {
           setError(err.response.data.message || "Failed to load enrollments");
@@ -75,6 +104,42 @@ export default function Enrollments() {
     };
 
     fetchEnrollments();
+  }, []);
+
+  // Refresh enrollments when page becomes visible (user navigates back)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        const token = localStorage.getItem("ctm_token");
+        if (token) {
+          axios.get(
+            "http://localhost:5000/api/enrollments/me",
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          ).then(response => {
+            const enrollmentsData = response.data || [];
+            // Filter out enrollments with missing or invalid course data
+            const validEnrollments = enrollmentsData.filter((enrollment) => {
+              const course = enrollment.courseId || enrollment.course;
+              if (!course) return false;
+              if (typeof course === 'string') return false;
+              if (!course._id) return false;
+              if (!course.title) return false;
+              return true;
+            });
+            setEnrollments(validEnrollments);
+          }).catch(err => {
+            console.error("Error refreshing enrollments:", err);
+          });
+        }
+      }
+    };
+
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
 
   const completedCount = enrollments.filter((e) => e.completed).length;
@@ -129,11 +194,14 @@ export default function Enrollments() {
           <h2 className="text-2xl font-bold mb-4 mt-2">Your Courses</h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {enrollments.map((enrollment) => {
-              const course = enrollment.courseId;
+              const course = enrollment.courseId || enrollment.course;
               const done = enrollment.completed;
               const progress = enrollment.progress || 0;
               
-              if (!course) return null;
+              if (!course) {
+                console.warn('Enrollment missing course data:', enrollment);
+                return null;
+              }
 
               return (
                 <div

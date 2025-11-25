@@ -61,6 +61,7 @@ export const createCourse = async (req, res, next) => {
     }
 
     // Create course
+    // Always start with 0 rating and 0 students (these should be calculated, not set manually)
     const course = await Course.create({
       title,
       description,
@@ -68,8 +69,8 @@ export const createCourse = async (req, res, next) => {
       category,
       level,
       duration,
-      rating: rating || 0,
-      students: students || 0,
+      rating: 0, // New courses always start with 0 rating
+      students: 0, // New courses always start with 0 students
       image: image || '',
       curriculum: curriculum || [],
       learningPoints: learningPoints || [],
@@ -124,8 +125,8 @@ export const updateCourse = async (req, res, next) => {
     if (category) course.category = category;
     if (level) course.level = level;
     if (duration !== undefined) course.duration = duration;
-    if (rating !== undefined) course.rating = rating;
-    if (students !== undefined) course.students = students;
+    // Don't allow manual updates to rating and students - these should be calculated
+    // rating and students are managed automatically based on enrollments/reviews
     if (image !== undefined) course.image = image;
     if (curriculum !== undefined) course.curriculum = curriculum;
     if (learningPoints !== undefined) course.learningPoints = learningPoints;

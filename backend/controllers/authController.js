@@ -15,8 +15,27 @@ export const register = async (req, res, next) => {
       return res.status(400).json({ message: 'Please provide name, email, and password' });
     }
 
+    // Validate name
+    if (name.trim().length < 2) {
+      return res.status(400).json({ message: 'Name must be at least 2 characters long' });
+    }
+
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Please provide a valid email address' });
+    }
+
+    // Validate password strength
+    if (password.length < 6) {
+      return res.status(400).json({ message: 'Password must be at least 6 characters long' });
+    }
+    if (password.length > 128) {
+      return res.status(400).json({ message: 'Password must be less than 128 characters' });
+    }
+
     // Check if user already exists
-    const existingUser = await User.findOne({ email });
+    const existingUser = await User.findOne({ email: email.toLowerCase().trim() });
     if (existingUser) {
       return res.status(400).json({ message: 'User with this email already exists' });
     }
@@ -27,8 +46,8 @@ export const register = async (req, res, next) => {
 
     // Create user
     const user = await User.create({
-      name,
-      email,
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
       password: hashedPassword,
       role: role || 'student',
     });
@@ -72,8 +91,19 @@ export const login = async (req, res, next) => {
       return res.status(400).json({ message: 'Please provide email and password' });
     }
 
-    // Find user by email
-    const user = await User.findOne({ email });
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({ message: 'Please provide a valid email address' });
+    }
+
+    // Validate password is not empty
+    if (password.trim().length === 0) {
+      return res.status(400).json({ message: 'Password cannot be empty' });
+    }
+
+    // Find user by email (case-insensitive)
+    const user = await User.findOne({ email: email.toLowerCase().trim() });
     if (!user) {
       return res.status(401).json({ message: 'Invalid email or password' });
     }

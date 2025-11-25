@@ -9,15 +9,50 @@ export default function Login() {
   const [pwd, setPwd] = useState("");
   const [err, setErr] = useState("");
   const [loading, setLoading] = useState(false);
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
+  // Validate email format
+  const validateEmail = (emailValue) => {
+    if (!emailValue) {
+      setEmailError("Email is required");
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailValue)) {
+      setEmailError("Please enter a valid email address");
+      return false;
+    }
+    setEmailError("");
+    return true;
+  };
+
+  // Validate password
+  const validatePassword = (passwordValue) => {
+    if (!passwordValue) {
+      setPasswordError("Password is required");
+      return false;
+    }
+    if (passwordValue.trim().length === 0) {
+      setPasswordError("Password cannot be empty");
+      return false;
+    }
+    setPasswordError("");
+    return true;
+  };
 
   const handleLogin = async (e) => {
     e.preventDefault();
     setErr("");
+    setEmailError("");
+    setPasswordError("");
     setLoading(true);
 
     // Validate form fields
-    if (!email || !pwd) {
-      setErr("Please enter both email and password.");
+    const isEmailValid = validateEmail(email);
+    const isPasswordValid = validatePassword(pwd);
+
+    if (!isEmailValid || !isPasswordValid) {
       setLoading(false);
       return;
     }
@@ -101,35 +136,45 @@ export default function Login() {
                 id="email"
                 type="email"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black/20"
+                onChange={(e) => {
+                  setEmail(e.target.value);
+                  if (emailError) validateEmail(e.target.value);
+                }}
+                onBlur={() => validateEmail(email)}
+                className={`w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black/20 ${
+                  emailError ? 'border-red-500' : ''
+                }`}
                 placeholder="you@example.com"
               />
+              {emailError && (
+                <p className="text-xs text-red-600 mt-1">{emailError}</p>
+              )}
             </div>
 
             <div>
-              <div className="flex items-center justify-between mb-1">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium"
-                >
-                  Password
-                </label>
-                <a
-                  href="#"
-                  className="text-sm text-gray-600 hover:underline"
-                >
-                  Forgot password?
-                </a>
-              </div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium mb-1"
+              >
+                Password
+              </label>
               <input
                 id="password"
                 type="password"
                 value={pwd}
-                onChange={(e) => setPwd(e.target.value)}
-                className="w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black/20"
+                onChange={(e) => {
+                  setPwd(e.target.value);
+                  if (passwordError) validatePassword(e.target.value);
+                }}
+                onBlur={() => validatePassword(pwd)}
+                className={`w-full rounded-xl border px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black/20 ${
+                  passwordError ? 'border-red-500' : ''
+                }`}
                 placeholder="Enter your password"
               />
+              {passwordError && (
+                <p className="text-xs text-red-600 mt-1">{passwordError}</p>
+              )}
             </div>
 
             {err && (

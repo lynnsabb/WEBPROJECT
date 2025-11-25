@@ -319,11 +319,6 @@ export default function CourseDetails({ course: courseProp, onBack }) {
             {/* Stats */}
             <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600">
               <div className="flex items-center gap-1">
-                <IconStar className="text-yellow-400" />
-                <span className="font-semibold text-gray-900">{course.rating || 0}</span>
-                <span>rating</span>
-              </div>
-              <div className="flex items-center gap-1">
                 <IconUsers />
                 <span className="font-semibold text-gray-900">{(course.students || 0).toLocaleString()}</span>
                 <span>students</span>

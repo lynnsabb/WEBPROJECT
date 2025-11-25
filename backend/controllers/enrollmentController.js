@@ -45,6 +45,11 @@ export const createEnrollment = async (req, res, next) => {
       completedLessons: Math.max(0, completedLessons),
     });
 
+    // Increment the course's student count
+    await Course.findByIdAndUpdate(courseId, {
+      $inc: { students: 1 }
+    });
+
     const populatedEnrollment = await Enrollment.findById(enrollment._id)
       .populate('userId', 'name email')
       .populate('courseId', 'title description instructor category level duration image');
@@ -69,7 +74,24 @@ export const getMyEnrollments = async (req, res, next) => {
       .populate('courseId', 'title description instructor category level duration image rating students curriculum')
       .sort({ createdAt: -1 });
 
-    res.json(enrollments);
+    // Filter out enrollments where courseId is null or course was deleted
+    const validEnrollments = enrollments.filter(enrollment => {
+      // Check if courseId exists and is populated
+      if (!enrollment.courseId) {
+        return false;
+      }
+      // Check if it's an object (populated) not just an ID string
+      if (typeof enrollment.courseId === 'string') {
+        return false;
+      }
+      // Check if course has required fields
+      if (!enrollment.courseId._id || !enrollment.courseId.title) {
+        return false;
+      }
+      return true;
+    });
+
+    res.json(validEnrollments);
   } catch (error) {
     console.error('Get my enrollments error:', error);
     next(error);
@@ -160,6 +182,17 @@ export const updateEnrollment = async (req, res, next) => {
       return res.status(403).json({ message: 'Not authorized to update this enrollment' });
     }
 
+    // Get course to validate total lessons
+    const course = await Course.findById(enrollment.courseId);
+    if (!course) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
+
+    // Calculate total lessons from curriculum
+    const totalLessons = (course.curriculum || []).reduce((total, module) => {
+      return total + (module.topics || []).length;
+    }, 0);
+
     // Update fields
     if (progress !== undefined) {
       enrollment.progress = Math.max(0, Math.min(100, progress));
@@ -172,7 +205,8 @@ export const updateEnrollment = async (req, res, next) => {
       }
     }
     if (completedLessons !== undefined) {
-      enrollment.completedLessons = Math.max(0, completedLessons);
+      // Ensure completedLessons doesn't exceed total lessons
+      enrollment.completedLessons = Math.max(0, Math.min(completedLessons, totalLessons));
     }
 
     await enrollment.save();
@@ -214,6 +248,11 @@ export const deleteEnrollment = async (req, res, next) => {
         return res.status(403).json({ message: 'Not authorized to delete this enrollment' });
       }
     }
+
+    // Decrement the course's student count before deleting enrollment
+    await Course.findByIdAndUpdate(enrollment.courseId, {
+      $inc: { students: -1 }
+    });
 
     await Enrollment.findByIdAndDelete(id);
 

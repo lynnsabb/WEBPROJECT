@@ -191,8 +191,6 @@ export default function ManageCourse() {
     description: "",
     duration: "",
     image: "",
-    rating: 4.5,
-    students: 0,
     modules: [],
   });
 
@@ -239,8 +237,6 @@ export default function ManageCourse() {
       description: "",
       duration: "",
       image: "",
-      rating: 4.5,
-      students: 0,
       modules: [],
     });
     setEditingCourse(null);
@@ -262,8 +258,6 @@ export default function ManageCourse() {
       description: course.description || "",
       duration: course.duration || "",
       image: course.image || "",
-      rating: course.rating || 4.5,
-      students: course.students || 0,
       modules: modulesFromCurriculum,
     });
 
@@ -280,10 +274,7 @@ export default function ManageCourse() {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]:
-        name === "rating" || name === "students"
-          ? parseFloat(value) || 0
-          : value,
+      [name]: value,
     }));
   };
 
@@ -364,15 +355,86 @@ export default function ManageCourse() {
         return;
       }
 
+      // Custom validation - only check top-level required fields
+      if (!formData.title?.trim()) {
+        showToast("❌ Course title is required", "error");
+        setSubmitting(false);
+        return;
+      }
+      if (!formData.description?.trim()) {
+        showToast("❌ Description is required", "error");
+        setSubmitting(false);
+        return;
+      }
+      if (!formData.duration?.trim()) {
+        showToast("❌ Duration is required", "error");
+        setSubmitting(false);
+        return;
+      }
+      if (!formData.image?.trim()) {
+        showToast("❌ Image URL is required", "error");
+        setSubmitting(false);
+        return;
+      }
+
+      // Validate that at least one module is required
+      if (!formData.modules || formData.modules.length === 0) {
+        showToast("❌ At least one module is required", "error");
+        setSubmitting(false);
+        return;
+      }
+
+      // Validate all modules and lessons - all fields are required
+      for (let mIndex = 0; mIndex < formData.modules.length; mIndex++) {
+        const module = formData.modules[mIndex];
+        
+        if (!module.title?.trim()) {
+          showToast(`❌ Module ${mIndex + 1} title is required`, "error");
+          setSubmitting(false);
+          return;
+        }
+        
+        // Validate that each module has at least one lesson
+        if (!module.lessons || module.lessons.length === 0) {
+          showToast(`❌ Module ${mIndex + 1} must have at least one lesson`, "error");
+          setSubmitting(false);
+          return;
+        }
+        
+        // Validate all lessons in the module
+        for (let lIndex = 0; lIndex < module.lessons.length; lIndex++) {
+          const lesson = module.lessons[lIndex];
+          
+          if (!lesson.title?.trim()) {
+            showToast(`❌ Lesson ${lIndex + 1} in Module ${mIndex + 1} title is required`, "error");
+            setSubmitting(false);
+            return;
+          }
+          if (!lesson.videoUrl?.trim()) {
+            showToast(`❌ Lesson ${lIndex + 1} in Module ${mIndex + 1} video URL is required`, "error");
+            setSubmitting(false);
+            return;
+          }
+        }
+      }
+
+      // Auto-format duration: add "h" if it's just a number
+      let formattedDuration = formData.duration.trim();
+      if (formattedDuration && /^\d+$/.test(formattedDuration)) {
+        // If it's just numbers, add "h"
+        formattedDuration = formattedDuration + "h";
+      }
+
       const curriculum = mapModulesToCurriculum(formData.modules);
       const courseData = {
         title: formData.title,
         description: formData.description,
         category: formData.category,
         level: formData.level,
-        duration: formData.duration,
-        rating: formData.rating || 0,
-        students: formData.students || 0,
+        duration: formattedDuration,
+        // Don't send rating or students - these are managed automatically by the backend
+        // rating: 0 (new courses start with 0)
+        // students: 0 (new courses start with 0, increments on enrollment)
         image: formData.image,
         curriculum: curriculum,
         learningPoints: [], // Can be added later if needed
@@ -570,9 +632,6 @@ export default function ManageCourse() {
                     alt={course.title}
                     className="w-full h-full object-cover"
                   />
-                  <span className="absolute top-4 right-4 px-3 py-1 bg-green-500 text-white text-sm font-medium rounded-full">
-                    Free Course
-                  </span>
                 </div>
 
                 <div className="p-6">
@@ -606,12 +665,6 @@ export default function ManageCourse() {
                   </p>
 
                   <div className="flex items-center justify-between text-sm text-gray-600 border-t border-gray-200 pt-4 mb-4">
-                    <div className="flex items-center gap-1">
-                      <IconStar className="text-yellow-400" />
-                      <span className="font-semibold text-gray-900">
-                        {course.rating}
-                      </span>
-                    </div>
                     <span className="text-gray-600">{course.duration}</span>
                     <span className="text-gray-600">
                       {course.students?.toLocaleString() || 0} students
@@ -671,7 +724,7 @@ export default function ManageCourse() {
                 </button>
               </div>
 
-              <form onSubmit={handleSubmit} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4" noValidate>
                 {submitting && (
                   <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-700">
                     {editingCourse ? "Updating course..." : "Creating course..."}
@@ -687,7 +740,6 @@ export default function ManageCourse() {
                     name="title"
                     value={formData.title}
                     onChange={handleInputChange}
-                    required
                     placeholder="e.g., Advanced React Patterns"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   />
@@ -702,7 +754,6 @@ export default function ManageCourse() {
                       name="category"
                       value={formData.category}
                       onChange={handleInputChange}
-                      required
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     >
                       <option value="Programming">Programming</option>
@@ -723,7 +774,6 @@ export default function ManageCourse() {
                       name="level"
                       value={formData.level}
                       onChange={handleInputChange}
-                      required
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     >
                       <option value="Beginner">Beginner</option>
@@ -742,44 +792,9 @@ export default function ManageCourse() {
                     name="duration"
                     value={formData.duration}
                     onChange={handleInputChange}
-                    required
-                    placeholder="e.g., 20h"
+                    placeholder="e.g., 20 hours"
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   />
-                </div>
-
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Rating
-                    </label>
-                    <input
-                      type="number"
-                      name="rating"
-                      value={formData.rating}
-                      onChange={handleInputChange}
-                      min="0"
-                      max="5"
-                      step="0.1"
-                      placeholder="4.5"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Students
-                    </label>
-                    <input
-                      type="number"
-                      name="students"
-                      value={formData.students}
-                      onChange={handleInputChange}
-                      min="0"
-                      placeholder="0"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                    />
-                  </div>
                 </div>
 
                 <div>
@@ -787,11 +802,10 @@ export default function ManageCourse() {
                     Image URL *
                   </label>
                   <input
-                    type="url"
+                    type="text"
                     name="image"
                     value={formData.image}
                     onChange={handleInputChange}
-                    required
                     placeholder="https://images.unsplash.com/..."
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                   />
@@ -805,7 +819,6 @@ export default function ManageCourse() {
                     name="description"
                     value={formData.description}
                     onChange={handleInputChange}
-                    required
                     rows={3}
                     placeholder="Describe what students will learn in this course..."
                     className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
@@ -815,9 +828,14 @@ export default function ManageCourse() {
                 {/* Modules & Lessons */}
                 <div className="border border-gray-200 rounded-lg p-4 space-y-4 bg-gray-50">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-gray-900">
-                      Modules & Lessons
-                    </h3>
+                    <div>
+                      <h3 className="text-lg font-semibold text-gray-900">
+                        Modules & Lessons *
+                      </h3>
+                      <p className="text-xs text-gray-600 mt-1">
+                        All fields marked with * are required. At least one module with one lesson is required.
+                      </p>
+                    </div>
                     <button
                       type="button"
                       onClick={handleAddModuleClick}
@@ -828,11 +846,6 @@ export default function ManageCourse() {
                     </button>
                   </div>
 
-                  {formData.modules.length === 0 && (
-                    <p className="text-sm text-gray-500">
-                      No modules yet. Click &quot;Add Module&quot; to get started.
-                    </p>
-                  )}
 
                   <div className="space-y-4">
                     {formData.modules.map((module, mIndex) => (
@@ -869,7 +882,6 @@ export default function ManageCourse() {
                                   e.target.value
                                 )
                               }
-                              required
                               placeholder="e.g., Getting Started"
                               className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             />
@@ -896,9 +908,14 @@ export default function ManageCourse() {
 
                         <div className="mt-3 space-y-3">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-gray-800">
-                              Lessons
-                            </span>
+                            <div>
+                              <span className="text-sm font-medium text-gray-800">
+                                Lessons *
+                              </span>
+                              <p className="text-xs text-gray-600 mt-0.5">
+                                At least one lesson required per module
+                              </p>
+                            </div>
                             <button
                               type="button"
                               onClick={() => handleAddLesson(mIndex)}
@@ -908,6 +925,14 @@ export default function ManageCourse() {
                               Add Lesson
                             </button>
                           </div>
+                          
+                          {module.lessons.length === 0 && (
+                            <div className="bg-blue-50 border border-blue-200 rounded-md p-2">
+                              <p className="text-xs text-blue-800">
+                                <span className="font-medium">Note:</span> This module must have at least one lesson. Click &quot;Add Lesson&quot; to add one.
+                              </p>
+                            </div>
+                          )}
 
                           {module.lessons.map((lesson, lIndex) => (
                             <div
@@ -946,7 +971,6 @@ export default function ManageCourse() {
                                         e.target.value
                                       )
                                     }
-                                    required
                                     placeholder="e.g., What is Python?"
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                   />
@@ -966,7 +990,6 @@ export default function ManageCourse() {
                                         e.target.value
                                       )
                                     }
-                                    required
                                     placeholder="https://..."
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                                   />

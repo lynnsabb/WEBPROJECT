@@ -8,19 +8,86 @@ export default function Register() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
 
-  const onChange = (e) =>
-    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  // Validate name
+  const validateName = (nameValue) => {
+    if (!nameValue || nameValue.trim().length === 0) {
+      setNameError("Name is required");
+      return false;
+    }
+    if (nameValue.trim().length < 2) {
+      setNameError("Name must be at least 2 characters long");
+      return false;
+    }
+    setNameError("");
+    return true;
+  };
+
+  // Validate email format
+  const validateEmail = (emailValue) => {
+    if (!emailValue) {
+      setEmailError("Email is required");
+      return false;
+    }
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailValue)) {
+      setEmailError("Please enter a valid email address");
+      return false;
+    }
+    setEmailError("");
+    return true;
+  };
+
+  // Validate password
+  const validatePassword = (passwordValue) => {
+    if (!passwordValue) {
+      setPasswordError("Password is required");
+      return false;
+    }
+    if (passwordValue.length < 6) {
+      setPasswordError("Password must be at least 6 characters long");
+      return false;
+    }
+    if (passwordValue.length > 128) {
+      setPasswordError("Password must be less than 128 characters");
+      return false;
+    }
+    setPasswordError("");
+    return true;
+  };
+
+  const onChange = (e) => {
+    const { name, value } = e.target;
+    setForm((f) => ({ ...f, [name]: value }));
+    
+    // Real-time validation
+    if (name === 'name') {
+      if (value.trim().length > 0) validateName(value);
+    } else if (name === 'email') {
+      if (value.trim().length > 0) validateEmail(value);
+    } else if (name === 'password') {
+      if (value.length > 0) validatePassword(value);
+    }
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
+    setNameError("");
+    setEmailError("");
+    setPasswordError("");
     setLoading(true);
 
-    // Validate form fields
-    if (!form.name || !form.email || !form.password || !form.role) {
-      setError("Please fill in all fields");
+    // Validate all fields
+    const isNameValid = validateName(form.name);
+    const isEmailValid = validateEmail(form.email);
+    const isPasswordValid = validatePassword(form.password);
+
+    if (!isNameValid || !isEmailValid || !isPasswordValid) {
       setLoading(false);
       return;
     }
@@ -115,39 +182,62 @@ export default function Register() {
           <div>
             <label className="block text-sm font-medium mb-1">Full Name</label>
             <input
-              className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20"
+              className={`w-full rounded-xl border bg-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20 ${
+                nameError ? 'border-red-500' : 'border-gray-200'
+              }`}
               name="name"
               placeholder="Jane Doe"
               value={form.name}
               onChange={onChange}
+              onBlur={() => validateName(form.name)}
               required
             />
+            {nameError && (
+              <p className="text-xs text-red-600 mt-1">{nameError}</p>
+            )}
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-1">Email</label>
             <input
-              className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20"
+              className={`w-full rounded-xl border bg-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20 ${
+                emailError ? 'border-red-500' : 'border-gray-200'
+              }`}
               name="email"
               type="email"
               placeholder="jane@example.com"
               value={form.email}
               onChange={onChange}
+              onBlur={() => validateEmail(form.email)}
               required
             />
+            {emailError && (
+              <p className="text-xs text-red-600 mt-1">{emailError}</p>
+            )}
           </div>
 
           <div>
             <label className="block text-sm font-medium mb-1">Password</label>
             <input
-              className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20"
+              className={`w-full rounded-xl border bg-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20 ${
+                passwordError ? 'border-red-500' : 'border-gray-200'
+              }`}
               name="password"
               type="password"
               placeholder="••••••••"
               value={form.password}
               onChange={onChange}
+              onBlur={() => validatePassword(form.password)}
               required
             />
+            {passwordError && (
+              <p className="text-xs text-red-600 mt-1">{passwordError}</p>
+            )}
+            {!passwordError && form.password.length > 0 && (
+              <p className="text-xs text-gray-500 mt-1">
+                Password must be at least 6 characters long
+              </p>
+            )}
           </div>
 
           <div>

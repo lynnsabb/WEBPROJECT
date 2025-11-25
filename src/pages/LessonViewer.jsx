@@ -98,7 +98,32 @@ function VideoPlayer({ videoUrl, onVideoEnd }) {
     const progressRef = useRef(null);
     const speeds = [0.25, 0.5, 0.75, 1, 1.25, 1.5, 1.75, 2];
 
+    // Check if video URL is YouTube
+    const isYouTube = videoUrl && (
+        videoUrl.includes('youtube.com/embed/') ||
+        videoUrl.includes('youtu.be/') ||
+        videoUrl.includes('youtube.com/watch?v=')
+    );
+
+    // Convert YouTube URL to embed format
+    const getYouTubeEmbedUrl = (url) => {
+        if (url.includes('youtube.com/embed/')) {
+            return url;
+        }
+        if (url.includes('youtu.be/')) {
+            const videoId = url.split('youtu.be/')[1].split('?')[0];
+            return `https://www.youtube.com/embed/${videoId}`;
+        }
+        if (url.includes('youtube.com/watch?v=')) {
+            const videoId = url.split('v=')[1].split('&')[0];
+            return `https://www.youtube.com/embed/${videoId}`;
+        }
+        return url;
+    };
+
     useEffect(() => {
+        if (isYouTube) return; // Skip video events for YouTube
+        
         const video = videoRef.current;
         if (!video) return;
 
@@ -118,7 +143,7 @@ function VideoPlayer({ videoUrl, onVideoEnd }) {
             video.removeEventListener('loadedmetadata', updateDuration);
             video.removeEventListener('ended', handleEnded);
         };
-    }, [videoUrl, onVideoEnd]);
+    }, [videoUrl, onVideoEnd, isYouTube]);
 
     const togglePlay = () => {
         if (videoRef.current) {
@@ -182,6 +207,24 @@ function VideoPlayer({ videoUrl, onVideoEnd }) {
         return `${minutes}:${seconds.toString().padStart(2, '0')}`;
     };
 
+    // If YouTube, use iframe
+    if (isYouTube) {
+        return (
+            <div className="bg-black rounded-lg overflow-hidden shadow-2xl">
+                <div className="relative w-full" style={{ paddingBottom: '56.25%' }}>
+                    <iframe
+                        src={getYouTubeEmbedUrl(videoUrl) + '?autoplay=0&rel=0'}
+                        className="absolute top-0 left-0 w-full h-full"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                        title="Video player"
+                    />
+                </div>
+            </div>
+        );
+    }
+
     return (
         <div className="bg-black rounded-lg overflow-hidden shadow-2xl">
             <div className="relative group">
@@ -190,6 +233,7 @@ function VideoPlayer({ videoUrl, onVideoEnd }) {
                     src={videoUrl}
                     className="w-full aspect-video"
                     onClick={togglePlay}
+                    controls={false}
                 />
 
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -285,17 +329,53 @@ export default function LessonViewer() {
 
     const [course, setCourse] = useState(null);
     const [completedLessons, setCompletedLessons] = useState([]);
+    const [enrollment, setEnrollment] = useState(null);
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [saving, setSaving] = useState(false);
 
+    // Fetch course and enrollment
     useEffect(() => {
-        const fetchCourse = async () => {
+        const fetchData = async () => {
             try {
                 setLoading(true);
                 setError("");
-                const response = await axios.get(`http://localhost:5000/api/courses/${courseId}`);
-                setCourse(response.data);
+                
+                // Fetch course
+                const courseResponse = await axios.get(`http://localhost:5000/api/courses/${courseId}`);
+                setCourse(courseResponse.data);
+
+                // Fetch enrollment if user is logged in
+                const token = localStorage.getItem("ctm_token");
+                if (token) {
+                    try {
+                        const enrollmentsResponse = await axios.get(
+                            "http://localhost:5000/api/enrollments/me",
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            }
+                        );
+                        
+                        // Find enrollment for this course
+                        const courseEnrollment = enrollmentsResponse.data.find(
+                            (e) => String(e.courseId._id || e.courseId) === String(courseId)
+                        );
+                        
+                        if (courseEnrollment) {
+                            setEnrollment(courseEnrollment);
+                            // Note: We can't know which specific lessons were completed
+                            // since we only store a count. The completedLessons array will
+                            // be built up as the user marks lessons complete in this session.
+                            // Progress will be shown from the enrollment data.
+                        }
+                    } catch (err) {
+                        console.error("Error fetching enrollment:", err);
+                        // Continue without enrollment - user might not be enrolled
+                    }
+                }
             } catch (err) {
                 console.error("Error fetching course:", err);
                 setError("Failed to load course. Please try again.");
@@ -305,7 +385,7 @@ export default function LessonViewer() {
         };
 
         if (courseId) {
-            fetchCourse();
+            fetchData();
         }
     }, [courseId]);
 
@@ -358,9 +438,56 @@ export default function LessonViewer() {
     const prevLesson = currentLessonIndex > 0 ? allLessons[currentLessonIndex - 1] : null;
     const nextLesson = currentLessonIndex < allLessons.length - 1 ? allLessons[currentLessonIndex + 1] : null;
 
-    const handleMarkComplete = () => {
-        if (!completedLessons.includes(currentLesson.id)) {
-            setCompletedLessons([...completedLessons, currentLesson.id]);
+    const handleMarkComplete = async () => {
+        if (!enrollment || completedLessons.includes(currentLesson.id)) {
+            return;
+        }
+
+        try {
+            setSaving(true);
+            
+            // Add to local state immediately for UI feedback
+            const newCompletedLessons = [...completedLessons, currentLesson.id];
+            setCompletedLessons(newCompletedLessons);
+
+            // Calculate new progress
+            // Get existing completed count from enrollment and increment by 1
+            const existingCompletedCount = enrollment.completedLessons || 0;
+            const totalLessons = allLessons.length;
+            
+            // Ensure completed count doesn't exceed total lessons
+            const newCompletedCount = Math.min(existingCompletedCount + 1, totalLessons);
+            
+            const newProgress = Math.min(100, Math.round((newCompletedCount / totalLessons) * 100));
+            const isCompleted = newProgress >= 100;
+
+            // Update enrollment in database
+            const token = localStorage.getItem("ctm_token");
+            if (token) {
+                const response = await axios.put(
+                    `http://localhost:5000/api/enrollments/${enrollment._id}`,
+                    {
+                        progress: newProgress,
+                        completed: isCompleted,
+                        completedLessons: newCompletedCount,
+                    },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+
+                // Update local enrollment state with response data
+                setEnrollment(response.data);
+            }
+        } catch (err) {
+            console.error("Error updating progress:", err);
+            // Revert local state on error
+            setCompletedLessons(completedLessons.filter(id => id !== currentLesson.id));
+            alert(err.response?.data?.message || "Failed to save progress. Please try again.");
+        } finally {
+            setSaving(false);
         }
     };
 
@@ -372,7 +499,10 @@ export default function LessonViewer() {
         navigate(`/courses/${courseId}/learn/${lesson.id || lesson._id}`);
     };
 
-    const progressPercentage = (completedLessons.length / allLessons.length) * 100;
+    // Calculate progress - use enrollment progress if available, otherwise calculate from completed lessons
+    const progressPercentage = enrollment 
+        ? enrollment.progress 
+        : (completedLessons.length / allLessons.length) * 100;
 
     return (
         <div className="min-h-screen bg-gray-900 text-white flex">
@@ -411,7 +541,13 @@ export default function LessonViewer() {
                                 />
                             </div>
                             <p className="text-xs text-gray-400 mt-1">
-                                {completedLessons.length} of {allLessons.length} lessons completed
+                                {(() => {
+                                    const totalLessons = allLessons.length;
+                                    const completedCount = enrollment 
+                                        ? Math.min(enrollment.completedLessons || 0, totalLessons)
+                                        : completedLessons.length;
+                                    return `${completedCount} of ${totalLessons} lessons completed`;
+                                })()}
                             </p>
                         </div>
 
@@ -489,9 +625,11 @@ export default function LessonViewer() {
                                             ? 'bg-green-600 text-white cursor-default'
                                             : 'bg-indigo-600 hover:bg-indigo-700 text-white'
                                             }`}
-                                        disabled={completedLessons.includes(currentLesson.id)}
+                                        disabled={completedLessons.includes(currentLesson.id) || saving || !enrollment}
                                     >
-                                        {completedLessons.includes(currentLesson.id) ? (
+                                        {saving ? (
+                                            'Saving...'
+                                        ) : completedLessons.includes(currentLesson.id) ? (
                                             <>
                                                 <IconCheck />
                                                 Completed

@@ -8,6 +8,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const [enrollments, setEnrollments] = useState([]);
   const [instructorCourses, setInstructorCourses] = useState([]);
+  const [uniqueStudentCount, setUniqueStudentCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -59,9 +60,34 @@ export default function Profile() {
               (course) => course.createdBy && String(course.createdBy._id || course.createdBy) === String(user._id)
             );
             setInstructorCourses(myCourses);
+
+            // Fetch enrollments to count unique students
+            // The backend already filters enrollments for instructor's courses
+            try {
+              const enrollmentsResponse = await axios.get(
+                "http://localhost:5000/api/enrollments",
+                {
+                  headers: {
+                    Authorization: `Bearer ${token}`,
+                  },
+                }
+              );
+              
+              // Count unique students across all enrollments
+              // Backend already filtered to only this instructor's courses
+              const uniqueStudentIds = new Set(
+                enrollmentsResponse.data.map(e => String(e.userId._id || e.userId))
+              );
+              setUniqueStudentCount(uniqueStudentIds.size);
+            } catch (err) {
+              console.error("Error fetching enrollments for student count:", err);
+              // Fallback to summing course students if enrollment fetch fails
+              setUniqueStudentCount(myCourses.reduce((s, c) => s + (c.students || 0), 0));
+            }
           } catch (err) {
             console.error("Error fetching courses:", err);
             setInstructorCourses([]);
+            setUniqueStudentCount(0);
           }
         }
       } catch (err) {
@@ -88,14 +114,8 @@ export default function Profile() {
   const stats = {
     enrolled: enrollments.length,
     completed: enrollments.filter((e) => e.completed).length,
-    totalHours: 0, // Can be calculated from course durations if needed
     certificates: enrollments.filter((e) => e.completed).length,
   };
-
-  // Calculate member since date (from user creation timestamp if available)
-  const memberSince = user.createdAt
-    ? new Date(user.createdAt).toLocaleDateString("en-US", { month: "long", year: "numeric" })
-    : "Recently";
 
   return (
     <section className="max-w-7xl mx-auto w-full px-4 py-8 space-y-8">
@@ -128,7 +148,6 @@ export default function Profile() {
                 <h2 className="text-2xl font-bold">{user?.name ?? "User"}</h2>
                 <p className="text-gray-600 mt-1">{user?.email}</p>
                 <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-gray-500">
-                  <span>Member since {memberSince}</span>
                   <span className="inline-flex items-center rounded-lg bg-indigo-100 px-3 py-1 text-indigo-700 font-medium">
                     {isStudent ? "Student" : "Instructor"}
                   </span>
@@ -161,10 +180,9 @@ export default function Profile() {
         <>
           {isStudent && (
             <>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 md:grid-cols-3">
                 <StatCard title="Courses Enrolled" value={stats.enrolled} icon="📚" />
                 <StatCard title="Courses Completed" value={stats.completed} icon="🏆" />
-                <StatCard title="Total Learning Hours" value={Math.round(stats.totalHours)} icon="⏱️" />
                 <StatCard title="Certificates Earned" value={stats.certificates} icon="🎓" />
               </div>
 
@@ -239,21 +257,12 @@ export default function Profile() {
 
           {!isStudent && (
             <div className="space-y-6">
-              <div className="grid gap-4 md:grid-cols-3">
+              <div className="grid gap-4 md:grid-cols-2">
                 <StatCard title="Your Courses" value={instructorCourses.length} icon="📘" />
                 <StatCard
                   title="Total Students"
-                  value={instructorCourses.reduce((s, c) => s + (c.students || 0), 0)}
+                  value={uniqueStudentCount}
                   icon="👥"
-                />
-                <StatCard
-                  title="Average Rating"
-                  value={
-                    instructorCourses.length
-                      ? (instructorCourses.reduce((s, c) => s + (c.rating || 0), 0) / instructorCourses.length).toFixed(1)
-                      : 0
-                  }
-                  icon="⭐"
                 />
               </div>
 
@@ -286,7 +295,6 @@ export default function Profile() {
                         <div className="p-4">
                           <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
                             <span>{c.category}</span>
-                            <span>⭐ {c.rating || 0}</span>
                           </div>
                           <h3 className="font-semibold line-clamp-2">{c.title}</h3>
                           <div className="flex items-center justify-between text-sm text-gray-600 mt-2">

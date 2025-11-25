@@ -229,9 +229,9 @@ export default function Home() {
     fetchCourses();
   }, []);
 
-  // Get top 6 courses sorted by rating (for popular section)
+  // Get top 6 courses sorted by students (for popular section)
   const popularCourses = [...courses]
-    .sort((a, b) => (b.rating || 0) - (a.rating || 0))
+    .sort((a, b) => (b.students || 0) - (a.students || 0))
     .slice(0, 6);
 
   // Filter courses based on search query
@@ -453,10 +453,6 @@ export default function Home() {
                       </span>
                     </p>
                     <div className="flex items-center gap-4 text-sm text-gray-600 border-t border-gray-200 pt-4 mb-4">
-                      <div className="flex items-center gap-1">
-                        <IconStar className="text-yellow-400" />
-                        <span className="font-semibold text-gray-900">{course.rating}</span>
-                      </div>
                       <div className="flex items-center gap-1">
                         <IconUsers />
                         <span>{(course.students || 0).toLocaleString()}</span>
