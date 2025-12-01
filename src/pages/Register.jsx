@@ -1,3 +1,4 @@
+// farah
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
@@ -8,9 +9,35 @@ export default function Register() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [passwordErrors, setPasswordErrors] = useState({
+    length: false,
+    uppercase: false,
+    lowercase: false,
+    number: false,
+    special: false,
+  });
 
-  const onChange = (e) =>
-    setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
+  const validatePassword = (password) => {
+    const errors = {
+      length: password.length >= 8,
+      uppercase: /[A-Z]/.test(password),
+      lowercase: /[a-z]/.test(password),
+      number: /[0-9]/.test(password),
+      special: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password),
+    };
+    setPasswordErrors(errors);
+    return Object.values(errors).every(Boolean);
+  };
+
+  const onChange = (e) => {
+    const value = e.target.value;
+    setForm((f) => ({ ...f, [e.target.name]: value }));
+    
+    // Validate password in real-time
+    if (e.target.name === "password") {
+      validatePassword(value);
+    }
+  };
 
   const onSubmit = async (e) => {
     e.preventDefault();
@@ -21,6 +48,13 @@ export default function Register() {
     // Validate form fields
     if (!form.name || !form.email || !form.password || !form.role) {
       setError("Please fill in all fields");
+      setLoading(false);
+      return;
+    }
+
+    // Validate password complexity
+    if (!validatePassword(form.password)) {
+      setError("Password does not meet complexity requirements. Please check the requirements below.");
       setLoading(false);
       return;
     }
@@ -80,8 +114,8 @@ export default function Register() {
   };
 
   return (
-    <section className="min-h-[80vh] flex items-center justify-center bg-gray-50 px-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-sm p-8 border">
+    <section className="min-h-[80vh] flex items-center justify-center bg-gray-50 dark:bg-gray-900 px-4">
+      <div className="w-full max-w-md bg-white dark:bg-gray-800 rounded-2xl shadow-sm p-8 border border-gray-200 dark:border-gray-700">
         {/* Logo + Header */}
         <div className="flex items-center justify-center gap-3 mb-6">
           <img
@@ -89,23 +123,23 @@ export default function Register() {
             alt="LearnHub Logo"
             className="w-10 h-10 object-contain rounded-lg"
           />
-          <h1 className="text-2xl font-bold text-gray-900">LearnHub</h1>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">LearnHub</h1>
         </div>
 
-        <p className="text-gray-600 text-sm text-center mb-6">
+        <p className="text-gray-600 dark:text-gray-300 text-sm text-center mb-6">
           Create an account to start your learning journey.
         </p>
 
         {/* Success Message */}
         {success && (
-          <div className="mb-4 text-sm text-green-600 bg-green-50 border border-green-200 rounded-xl p-3">
+          <div className="mb-4 text-sm text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800 rounded-xl p-3">
             {success}
           </div>
         )}
 
         {/* Error Message */}
         {error && (
-          <div className="mb-4 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl p-3">
+          <div className="mb-4 text-sm text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-3">
             {error}
           </div>
         )}
@@ -113,9 +147,9 @@ export default function Register() {
         {/* Form */}
         <form onSubmit={onSubmit} className="space-y-4">
           <div>
-            <label className="block text-sm font-medium mb-1">Full Name</label>
+            <label className="block text-sm font-medium mb-1 text-gray-900 dark:text-white">Full Name</label>
             <input
-              className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20"
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 placeholder-gray-400 dark:placeholder-gray-500"
               name="name"
               placeholder="Jane Doe"
               value={form.name}
@@ -125,9 +159,9 @@ export default function Register() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Email</label>
+            <label className="block text-sm font-medium mb-1 text-gray-900 dark:text-white">Email</label>
             <input
-              className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20"
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 placeholder-gray-400 dark:placeholder-gray-500"
               name="email"
               type="email"
               placeholder="jane@example.com"
@@ -138,9 +172,9 @@ export default function Register() {
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Password</label>
+            <label className="block text-sm font-medium mb-1 text-gray-900 dark:text-white">Password</label>
             <input
-              className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20"
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20 placeholder-gray-400 dark:placeholder-gray-500"
               name="password"
               type="password"
               placeholder="••••••••"
@@ -148,12 +182,39 @@ export default function Register() {
               onChange={onChange}
               required
             />
+            {form.password && (
+              <div className="mt-2 p-3 bg-gray-50 dark:bg-gray-900/50 rounded-lg border border-gray-200 dark:border-gray-700">
+                <p className="text-xs font-medium text-gray-700 dark:text-gray-300 mb-2">Password Requirements:</p>
+                <div className="space-y-1 text-xs">
+                  <div className={`flex items-center gap-2 ${passwordErrors.length ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                    <span>{passwordErrors.length ? '✓' : '○'}</span>
+                    <span>At least 8 characters</span>
+                  </div>
+                  <div className={`flex items-center gap-2 ${passwordErrors.uppercase ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                    <span>{passwordErrors.uppercase ? '✓' : '○'}</span>
+                    <span>One uppercase letter</span>
+                  </div>
+                  <div className={`flex items-center gap-2 ${passwordErrors.lowercase ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                    <span>{passwordErrors.lowercase ? '✓' : '○'}</span>
+                    <span>One lowercase letter</span>
+                  </div>
+                  <div className={`flex items-center gap-2 ${passwordErrors.number ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                    <span>{passwordErrors.number ? '✓' : '○'}</span>
+                    <span>One number</span>
+                  </div>
+                  <div className={`flex items-center gap-2 ${passwordErrors.special ? 'text-green-600 dark:text-green-400' : 'text-gray-500 dark:text-gray-400'}`}>
+                    <span>{passwordErrors.special ? '✓' : '○'}</span>
+                    <span>One special character</span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           <div>
-            <label className="block text-sm font-medium mb-1">Role</label>
+            <label className="block text-sm font-medium mb-1 text-gray-900 dark:text-white">Role</label>
             <select
-              className="w-full rounded-xl border border-gray-200 bg-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20"
+              className="w-full rounded-xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-700 text-gray-900 dark:text-white px-3 py-2 shadow-sm focus:outline-none focus:ring-2 focus:ring-black/20 dark:focus:ring-white/20"
               name="role"
               value={form.role}
               onChange={onChange}
@@ -162,7 +223,7 @@ export default function Register() {
               <option value="student">Student</option>
               <option value="instructor">Instructor</option>
             </select>
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
               Select your role: Student to enroll in courses, Instructor to create and manage courses.
             </p>
           </div>
@@ -170,16 +231,16 @@ export default function Register() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full rounded-xl bg-black text-white py-2.5 hover:bg-black/90 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full rounded-xl bg-black dark:bg-white dark:text-black text-white py-2.5 hover:bg-black/90 dark:hover:bg-gray-200 transition disabled:opacity-50 disabled:cursor-not-allowed font-medium"
           >
             {loading ? "Creating Account..." : "Create Account"}
           </button>
         </form>
 
         {/* Footer */}
-        <p className="text-sm text-center text-gray-600 mt-6">
+        <p className="text-sm text-center text-gray-600 dark:text-gray-400 mt-6">
           Already have an account?{" "}
-          <Link to="/login" className="text-black font-medium hover:underline">
+          <Link to="/login" className="text-black dark:text-white font-medium hover:underline">
             Log in
           </Link>
         </p>

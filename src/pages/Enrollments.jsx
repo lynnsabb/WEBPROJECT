@@ -22,13 +22,13 @@ export default function Enrollments() {
   if (!user || user.role !== "student") {
     return (
       <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="rounded-2xl border bg-white p-10 text-center">
+        <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-10 text-center">
           <div className="text-4xl mb-3">🔒</div>
-          <h1 className="text-2xl font-bold mb-2">Access denied</h1>
-          <p className="text-gray-600 mb-6">This page is only available to students.</p>
+          <h1 className="text-2xl font-bold mb-2 text-gray-900 dark:text-white">Access denied</h1>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">This page is only available to students.</p>
           <Link
             to="/courses"
-            className="inline-flex items-center justify-center rounded-xl bg-black text-white px-4 py-2 hover:bg-black/90"
+            className="inline-flex items-center justify-center rounded-xl bg-black dark:bg-white dark:text-black text-white px-4 py-2 hover:bg-black/90 dark:hover:bg-gray-200 transition-colors"
           >
             Browse Courses
           </Link>
@@ -82,12 +82,12 @@ export default function Enrollments() {
   return (
     <section className="max-w-7xl mx-auto px-4 py-10">
       <div className="mb-8">
-        <h1 className="text-4xl font-bold tracking-tight">My Learning</h1>
-        <p className="text-gray-600 text-lg">Track your courses and continue learning</p>
+        <h1 className="text-4xl font-bold tracking-tight text-gray-900 dark:text-white">My Learning</h1>
+        <p className="text-gray-600 dark:text-gray-300 text-lg">Track your courses and continue learning</p>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 mb-8">
-        <div className="rounded-2xl border bg-white p-5">
+        <div className="rounded-2xl border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 p-5">
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-700 font-medium">Enrolled Courses</div>
             <div className="text-gray-400 text-lg">📘</div>
@@ -96,7 +96,7 @@ export default function Enrollments() {
           <div className="text-xs text-gray-500">Active enrollments</div>
         </div>
 
-        <div className="rounded-2xl border bg-white p-5">
+        <div className="rounded-2xl border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 p-5">
           <div className="flex items-center justify-between">
             <div className="text-sm text-gray-700 font-medium">Completed</div>
             <div className="text-gray-400 text-lg">🥇</div>
@@ -107,19 +107,19 @@ export default function Enrollments() {
       </div>
 
       {loading ? (
-        <div className="rounded-2xl border bg-white p-12 text-center">
+        <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-12 text-center">
           <div className="text-5xl mb-3">⏳</div>
-          <h3 className="text-xl font-semibold mb-2">Loading...</h3>
-          <p className="text-gray-600">Fetching your enrollments...</p>
+          <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Loading...</h3>
+          <p className="text-gray-600 dark:text-gray-300">Fetching your enrollments...</p>
         </div>
       ) : error ? (
-        <div className="rounded-2xl border bg-white p-12 text-center">
+        <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-12 text-center">
           <div className="text-5xl mb-3">⚠️</div>
-          <h3 className="text-xl font-semibold mb-2">Error</h3>
-          <p className="text-red-600 mb-6">{error}</p>
+          <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">Error</h3>
+          <p className="text-red-600 dark:text-red-400 mb-6">{error}</p>
           <button
             onClick={() => window.location.reload()}
-            className="inline-flex items-center justify-center rounded-xl bg-black text-white px-4 py-2 hover:bg-black/90"
+            className="inline-flex items-center justify-center rounded-xl bg-black dark:bg-white dark:text-black text-white px-4 py-2 hover:bg-black/90 dark:hover:bg-gray-200 transition-colors"
           >
             Retry
           </button>
@@ -138,9 +138,9 @@ export default function Enrollments() {
               return (
                 <div
                   key={enrollment._id}
-                  className="group overflow-hidden rounded-2xl border bg-white transition-all hover:shadow-lg"
+                  className="group overflow-hidden rounded-2xl border bg-white dark:bg-gray-800 border-gray-200 dark:border-gray-700 transition-all hover:shadow-lg"
                 >
-                  <div className="aspect-video bg-gradient-to-br from-purple-100 to-blue-100 relative overflow-hidden">
+                  <div className="aspect-video bg-gradient-to-br from-purple-100 dark:from-purple-900/30 to-blue-100 dark:to-blue-900/30 relative overflow-hidden">
                     {course.image ? (
                       <img
                         src={course.image}
@@ -166,10 +166,10 @@ export default function Enrollments() {
                         {course.category}
                       </span>
                     </div>
-                    <h3 className="font-semibold text-lg leading-snug line-clamp-2">
+                    <h3 className="font-semibold text-lg leading-snug line-clamp-2 text-gray-900 dark:text-white">
                       {course.title}
                     </h3>
-                    <p className="text-gray-600 text-sm line-clamp-2 mt-1">
+                    <p className="text-gray-600 dark:text-gray-300 text-sm line-clamp-2 mt-1">
                       {course.description}
                     </p>
 
@@ -211,11 +211,22 @@ export default function Enrollments() {
                     )}
 
                     <div className="mt-4 flex gap-2">
+                      {course.curriculum && course.curriculum[0]?.topics && course.curriculum[0].topics[0] && (
+                        <Link
+                          to={`/courses/${course._id}/learn/${course.curriculum[0].topics[0].id || 1}`}
+                          className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-600 dark:bg-indigo-700 text-white px-4 py-2 hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors font-medium"
+                        >
+                          <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor">
+                            <path d="M8 5v14l11-7z" />
+                          </svg>
+                          {done ? "Review Lessons" : "Start Learning"}
+                        </Link>
+                      )}
                       <Link
                         to={`/courses/${course._id}`}
-                        className="flex-1 inline-flex items-center justify-center rounded-xl bg-black text-white px-4 py-2 hover:bg-black/90"
+                        className="flex-1 inline-flex items-center justify-center rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white px-4 py-2 hover:bg-gray-200 dark:hover:bg-gray-600 border border-gray-300 dark:border-gray-600"
                       >
-                        {done ? "Review Course" : "Continue Learning"}
+                        View Details
                       </Link>
                     </div>
                   </div>
@@ -225,15 +236,15 @@ export default function Enrollments() {
           </div>
         </>
       ) : (
-        <div className="rounded-2xl border bg-white p-12 text-center">
+        <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-12 text-center">
           <div className="text-5xl mb-3">📘</div>
-          <h3 className="text-xl font-semibold mb-2">No Enrollments Yet</h3>
-          <p className="text-gray-600 mb-6">
+          <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">No Enrollments Yet</h3>
+          <p className="text-gray-600 dark:text-gray-300 mb-6">
             You haven't enrolled in any courses yet. Browse our catalog to start learning!
           </p>
           <Link
             to="/courses"
-            className="inline-flex items-center justify-center rounded-xl bg-black text-white px-4 py-2 hover:bg-black/90"
+            className="inline-flex items-center justify-center rounded-xl bg-black dark:bg-white dark:text-black text-white px-4 py-2 hover:bg-black/90 dark:hover:bg-gray-200 transition-colors"
           >
             Browse Courses
           </Link>

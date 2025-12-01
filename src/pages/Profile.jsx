@@ -100,24 +100,24 @@ export default function Profile() {
   return (
     <section className="max-w-7xl mx-auto w-full px-4 py-8 space-y-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold">My Profile</h1>
+        <h1 className="text-3xl font-bold text-gray-900 dark:text-white">My Profile</h1>
         <div className="flex gap-3">
           <Link
             to="/profile/edit"
-            className="px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-50 text-sm font-medium"
+            className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-medium text-gray-900 dark:text-white transition-colors"
           >
             Edit Profile
           </Link>
           <Link
             to="/profile/change-password"
-            className="px-4 py-2 rounded-xl border border-gray-300 hover:bg-gray-50 text-sm font-medium"
+            className="px-4 py-2 rounded-xl border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-700 text-sm font-medium text-gray-900 dark:text-white transition-colors"
           >
             Change Password
           </Link>
         </div>
       </div>
 
-      <div className="rounded-2xl border bg-white p-6 shadow-sm">
+      <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 shadow-sm">
         <div className="flex items-start gap-6">
           <div className="h-20 w-20 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 flex items-center justify-center text-white text-2xl font-bold shadow-lg">
             {initials}
@@ -125,21 +125,21 @@ export default function Profile() {
           <div className="flex-1">
             <div className="flex items-start justify-between">
               <div>
-                <h2 className="text-2xl font-bold">{user?.name ?? "User"}</h2>
-                <p className="text-gray-600 mt-1">{user?.email}</p>
-                <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-gray-500">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">{user?.name ?? "User"}</h2>
+                <p className="text-gray-600 dark:text-gray-300 mt-1">{user?.email}</p>
+                <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-gray-500 dark:text-gray-400">
                   <span>Member since {memberSince}</span>
-                  <span className="inline-flex items-center rounded-lg bg-indigo-100 px-3 py-1 text-indigo-700 font-medium">
+                  <span className="inline-flex items-center rounded-lg bg-indigo-100 dark:bg-indigo-900/30 px-3 py-1 text-indigo-700 dark:text-indigo-400 font-medium">
                     {isStudent ? "Student" : "Instructor"}
                   </span>
                   {!isStudent && user?.specialty && (
-                    <span className="inline-flex items-center rounded-lg bg-gray-100 px-3 py-1 text-gray-700">
+                    <span className="inline-flex items-center rounded-lg bg-gray-100 dark:bg-gray-700 px-3 py-1 text-gray-700 dark:text-gray-300">
                       {user.specialty}
                     </span>
                   )}
                 </div>
                 {!isStudent && user?.bio && (
-                  <p className="text-gray-600 mt-3 max-w-2xl">{user.bio}</p>
+                  <p className="text-gray-600 dark:text-gray-300 mt-3 max-w-2xl">{user.bio}</p>
                 )}
               </div>
             </div>
@@ -150,16 +150,16 @@ export default function Profile() {
       {loading ? (
         <div className="text-center py-16">
           <div className="text-5xl mb-3">⏳</div>
-          <p className="text-gray-500 text-lg">Loading profile data...</p>
+          <p className="text-gray-500 dark:text-gray-400 text-lg">Loading profile data...</p>
         </div>
       ) : error ? (
         <div className="text-center py-16">
           <div className="text-5xl mb-3">⚠️</div>
-          <p className="text-red-600 text-lg mb-4">{error}</p>
+          <p className="text-red-600 dark:text-red-400 text-lg mb-4">{error}</p>
         </div>
       ) : (
         <>
-          {isStudent && (
+              {isStudent && (
             <>
               <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
                 <StatCard title="Courses Enrolled" value={stats.enrolled} icon="📚" />
@@ -169,7 +169,7 @@ export default function Profile() {
               </div>
 
               <div className="space-y-4">
-                <h2 className="text-2xl font-bold">My Courses & Progress</h2>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">My Courses & Progress</h2>
                 {enrollments.length === 0 ? (
                   <EmptyEnrollments />
                 ) : (
@@ -183,37 +183,37 @@ export default function Profile() {
                       const p = completed ? 100 : progress;
 
                       return (
-                        <div key={enrollment._id} className="group overflow-hidden rounded-2xl border bg-white shadow-sm transition-all hover:shadow-lg">
-                          <div className="aspect-video bg-gradient-to-br from-indigo-100 to-purple-100 relative overflow-hidden">
+                        <div key={enrollment._id} className="group overflow-hidden rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-sm transition-all hover:shadow-lg dark:hover:shadow-xl">
+                          <div className="aspect-video bg-gradient-to-br from-indigo-100 dark:from-indigo-900/30 to-purple-100 dark:to-purple-900/30 relative overflow-hidden">
                             {course.image ? (
                               <img src={course.image} alt={course.title} className="w-full h-full object-cover" />
                             ) : (
-                              <span className="text-gray-400 text-4xl absolute inset-0 grid place-items-center">🎓</span>
+                              <span className="text-gray-400 dark:text-gray-500 text-4xl absolute inset-0 grid place-items-center">🎓</span>
                             )}
                             {completed && (
-                              <span className="absolute right-2 top-2 rounded-full bg-green-600 text-white text-xs px-2 py-1">
+                              <span className="absolute right-2 top-2 rounded-full bg-green-600 dark:bg-green-500 text-white text-xs px-2 py-1">
                                 Completed
                               </span>
                             )}
                           </div>
 
                           <div className="p-5">
-                            <h3 className="font-semibold text-lg leading-tight line-clamp-2 mb-2">{course.title}</h3>
-                            <p className="text-sm text-gray-600 mb-3">
+                            <h3 className="font-semibold text-lg leading-tight line-clamp-2 mb-2 text-gray-900 dark:text-white">{course.title}</h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-300 mb-3">
                               Instructor:{" "}
-                              <span className="font-medium text-gray-900">
+                              <span className="font-medium text-gray-900 dark:text-white">
                                 {typeof course.instructor === "string" ? course.instructor : course.instructor?.name || "Unknown"}
                               </span>
                             </p>
 
                             <div className="mb-4">
-                              <div className="flex items-center justify-between text-xs text-gray-600 mb-2">
+                              <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400 mb-2">
                                 <span className="font-medium">{p === 100 ? "Completed ✅" : "In Progress"}</span>
                                 <span className="font-semibold">Progress: {p}%</span>
                               </div>
-                              <div className="w-full bg-gray-200 rounded-full h-2">
+                              <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
                                 <div
-                                  className={`h-2 rounded-full transition-all duration-300 ${p === 100 ? "bg-green-500" : "bg-indigo-600"}`}
+                                  className={`h-2 rounded-full transition-all duration-300 ${p === 100 ? "bg-green-500 dark:bg-green-400" : "bg-indigo-600 dark:bg-indigo-500"}`}
                                   style={{ width: `${p}%` }}
                                 />
                               </div>
@@ -222,7 +222,7 @@ export default function Profile() {
                             <div className="flex flex-col gap-2">
                               <Link
                                 to={`/courses/${course._id}`}
-                                className="w-full inline-flex items-center justify-center rounded-xl bg-indigo-600 text-white px-4 py-2.5 hover:bg-indigo-700 font-medium text-sm"
+                                className="w-full inline-flex items-center justify-center rounded-xl bg-indigo-600 dark:bg-indigo-500 text-white px-4 py-2.5 hover:bg-indigo-700 dark:hover:bg-indigo-600 font-medium text-sm transition-colors"
                               >
                                 Continue Learning
                               </Link>
@@ -257,26 +257,26 @@ export default function Profile() {
                 />
               </div>
 
-              <div className="rounded-2xl border bg-white p-6 shadow-sm">
+              <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-6 shadow-sm">
                 <div className="flex items-center justify-between mb-4">
-                  <h2 className="text-2xl font-bold">Your Courses</h2>
+                  <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Your Courses</h2>
                   <div className="flex gap-3">
-                    <Link to="/manage" className="px-4 py-2 rounded-xl bg-black text-white hover:bg-black/90">
+                    <Link to="/manage" className="px-4 py-2 rounded-xl bg-black dark:bg-white dark:text-black text-white hover:bg-black/90 dark:hover:bg-gray-200 transition-colors">
                       Manage Courses
                     </Link>
-                    <Link to="/courses" className="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200">
+                    <Link to="/courses" className="px-4 py-2 rounded-xl bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">
                       Browse Catalog
                     </Link>
                   </div>
                 </div>
 
                 {instructorCourses.length === 0 ? (
-                  <p className="text-gray-600">You don't have courses yet. Go to "Manage Courses" to create one.</p>
+                  <p className="text-gray-600 dark:text-gray-300">You don't have courses yet. Go to "Manage Courses" to create one.</p>
                 ) : (
                   <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
                     {instructorCourses.map((c) => (
-                      <div key={c._id} className="rounded-2xl border bg-white overflow-hidden hover:shadow-md transition">
-                        <div className="aspect-video bg-gray-100">
+                      <div key={c._id} className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 overflow-hidden hover:shadow-md dark:hover:shadow-lg transition">
+                        <div className="aspect-video bg-gray-100 dark:bg-gray-700">
                           {c.image ? (
                             <img src={c.image} alt={c.title} className="w-full h-full object-cover" />
                           ) : (
@@ -284,14 +284,14 @@ export default function Profile() {
                           )}
                         </div>
                         <div className="p-4">
-                          <div className="flex items-center justify-between text-xs text-gray-500 mb-1">
+                          <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400 mb-1">
                             <span>{c.category}</span>
                             <span>⭐ {c.rating || 0}</span>
                           </div>
-                          <h3 className="font-semibold line-clamp-2">{c.title}</h3>
-                          <div className="flex items-center justify-between text-sm text-gray-600 mt-2">
+                          <h3 className="font-semibold line-clamp-2 text-gray-900 dark:text-white">{c.title}</h3>
+                          <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-300 mt-2">
                             <span>👥 {(c.students || 0).toLocaleString()}</span>
-                            <Link to={`/courses/${c._id}`} className="text-indigo-600 hover:underline">
+                            <Link to={`/courses/${c._id}`} className="text-indigo-600 dark:text-indigo-400 hover:underline">
                               View
                             </Link>
                           </div>
@@ -311,27 +311,27 @@ export default function Profile() {
 
 function StatCard({ title, value, icon }) {
   return (
-    <div className="rounded-2xl border bg-white p-5 shadow-sm">
+    <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-5 shadow-sm">
       <div className="flex items-center justify-between mb-2">
-        <div className="text-sm text-gray-600 font-medium">{title}</div>
+        <div className="text-sm text-gray-600 dark:text-gray-400 font-medium">{title}</div>
         <div className="text-2xl">{icon}</div>
       </div>
-      <div className="text-3xl font-bold text-gray-900">{value}</div>
+      <div className="text-3xl font-bold text-gray-900 dark:text-white">{value}</div>
     </div>
   );
 }
 
 function EmptyEnrollments() {
   return (
-    <div className="rounded-2xl border bg-white p-12 text-center shadow-sm">
+    <div className="rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-12 text-center shadow-sm">
       <div className="text-5xl mb-3">📚</div>
-      <h3 className="text-xl font-semibold mb-2">No Enrollments Yet</h3>
-      <p className="text-gray-600 mb-6">
+      <h3 className="text-xl font-semibold mb-2 text-gray-900 dark:text-white">No Enrollments Yet</h3>
+      <p className="text-gray-600 dark:text-gray-300 mb-6">
         You haven't enrolled in any courses yet. Browse our catalog to start learning!
       </p>
       <Link
         to="/courses"
-        className="inline-flex items-center justify-center rounded-xl bg-black text-white px-6 py-3 hover:bg-black/90"
+        className="inline-flex items-center justify-center rounded-xl bg-black dark:bg-white dark:text-black text-white px-6 py-3 hover:bg-black/90 dark:hover:bg-gray-200 transition-colors"
       >
         Browse Courses
       </Link>

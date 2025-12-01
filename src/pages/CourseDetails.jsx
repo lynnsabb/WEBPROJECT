@@ -1,4 +1,5 @@
 // src/pages/CourseDetails.jsx
+//farah
 import { useState, useMemo, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -228,10 +229,10 @@ export default function CourseDetails({ course: courseProp, onBack }) {
   // Loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="text-5xl mb-3">⏳</div>
-          <p className="text-gray-500 text-lg">Loading course...</p>
+          <p className="text-gray-500 dark:text-gray-400 text-lg">Loading course...</p>
         </div>
       </div>
     );
@@ -240,13 +241,13 @@ export default function CourseDetails({ course: courseProp, onBack }) {
   // Error state
   if (error && !course) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="text-5xl mb-3">⚠️</div>
-          <p className="text-red-600 text-lg mb-4">{error}</p>
+          <p className="text-red-600 dark:text-red-400 text-lg mb-4">{error}</p>
           <Link
             to="/courses"
-            className="inline-flex items-center justify-center rounded-xl bg-black text-white px-4 py-2 hover:bg-black/90"
+            className="inline-flex items-center justify-center rounded-xl bg-black dark:bg-white dark:text-black text-white px-4 py-2 hover:bg-black/90 dark:hover:bg-gray-200 transition-colors"
           >
             Back to Courses
           </Link>
@@ -258,13 +259,13 @@ export default function CourseDetails({ course: courseProp, onBack }) {
   // No course found
   if (!course) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
         <div className="text-center">
           <div className="text-5xl mb-3">📚</div>
-          <p className="text-gray-500 text-lg mb-4">Course not found</p>
+          <p className="text-gray-500 dark:text-gray-400 text-lg mb-4">Course not found</p>
           <Link
             to="/courses"
-            className="inline-flex items-center justify-center rounded-xl bg-black text-white px-4 py-2 hover:bg-black/90"
+            className="inline-flex items-center justify-center rounded-xl bg-black dark:bg-white dark:text-black text-white px-4 py-2 hover:bg-black/90 dark:hover:bg-gray-200 transition-colors"
           >
             Back to Courses
           </Link>
@@ -282,21 +283,21 @@ export default function CourseDetails({ course: courseProp, onBack }) {
     course.createdBy?.avatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(instructorName) + "&background=6366f1&color=fff";
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen bg-white dark:bg-gray-900">
       <main className="max-w-7xl mx-auto px-6 py-8">
         {error && (
-          <div className="mb-4 bg-red-50 border border-red-200 rounded-xl p-4 text-red-600">
+          <div className="mb-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-xl p-4 text-red-600 dark:text-red-400">
             {error}
           </div>
         )}
 
         {onBack ? (
-          <button onClick={onBack} className="flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition">
+          <button onClick={onBack} className="flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-6 transition">
             <IconArrowLeft />
             <span className="font-medium">Back to Courses</span>
           </button>
         ) : (
-          <Link to="/courses" className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 mb-6 transition">
+          <Link to="/courses" className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white mb-6 transition">
             <IconArrowLeft />
             <span className="font-medium">Back to Courses</span>
           </Link>
@@ -306,79 +307,104 @@ export default function CourseDetails({ course: courseProp, onBack }) {
           {/* LEFT */}
           <div className="lg:col-span-2 space-y-6">
             <div>
-              <span className="px-3 py-1 bg-gray-900 text-white text-sm font-medium rounded-full mr-2">
+              <span className="px-3 py-1 bg-gray-900 dark:bg-gray-700 text-white text-sm font-medium rounded-full mr-2">
                 {course.category}
               </span>
-              <span className="px-3 py-1 bg-white border border-gray-300 text-gray-700 text-sm font-medium rounded-full">
+              <span className="px-3 py-1 bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-full">
                 {course.level}
               </span>
-              <h1 className="text-4xl font-bold text-gray-900 mt-4">{course.title}</h1>
-              <p className="text-lg text-gray-600 mt-2">{course.description}</p>
+              <h1 className="text-4xl font-bold text-gray-900 dark:text-white mt-4">{course.title}</h1>
+              <p className="text-lg text-gray-600 dark:text-gray-300 mt-2">{course.description}</p>
             </div>
 
             {/* Stats */}
-            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600">
+            <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600 dark:text-gray-400">
               <div className="flex items-center gap-1">
                 <IconStar className="text-yellow-400" />
-                <span className="font-semibold text-gray-900">{course.rating || 0}</span>
+                <span className="font-semibold text-gray-900 dark:text-white">{course.rating || 0}</span>
                 <span>rating</span>
               </div>
               <div className="flex items-center gap-1">
                 <IconUsers />
-                <span className="font-semibold text-gray-900">{(course.students || 0).toLocaleString()}</span>
+                <span className="font-semibold text-gray-900 dark:text-white">{(course.students || 0).toLocaleString()}</span>
                 <span>students</span>
               </div>
               <div className="flex items-center gap-1">
                 <IconClock />
-                <span className="font-semibold text-gray-900">{course.duration}</span>
+                <span className="font-semibold text-gray-900 dark:text-white">{course.duration}</span>
               </div>
               <div className="flex items-center gap-1">
                 <IconBook />
-                <span className="font-semibold text-gray-900">{totalLessons}</span>
+                <span className="font-semibold text-gray-900 dark:text-white">{totalLessons}</span>
                 <span>lessons</span>
               </div>
             </div>
 
             {/* What you'll learn */}
             {course.learningPoints && course.learningPoints.length > 0 && (
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h2 className="text-2xl font-bold text-gray-900 mb-4">What You'll Learn</h2>
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">What You'll Learn</h2>
                 {course.learningPoints.map((p, i) => (
                   <div key={i} className="flex items-start gap-3 mb-2">
-                    <IconCheckCircle className="text-green-500 mt-0.5" />
-                    <span className="text-gray-700">{p}</span>
+                    <IconCheckCircle className="text-green-500 dark:text-green-400 mt-0.5" />
+                    <span className="text-gray-700 dark:text-gray-300">{p}</span>
                   </div>
                 ))}
               </div>
             )}
 
             {/* Curriculum */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">Course Curriculum</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Course Curriculum</h2>
+                {isEnrolled && course.curriculum && course.curriculum[0]?.topics && course.curriculum[0].topics[0] && (
+                  <Link
+                    to={`/courses/${course._id}/learn/${firstLessonId}`}
+                    className="text-sm text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300 font-medium flex items-center gap-1"
+                  >
+                    <IconPlayCircle className="w-4 h-4" />
+                    Start Learning
+                  </Link>
+                )}
+              </div>
               {course.curriculum && course.curriculum.length > 0 ? (
                 course.curriculum.map((mod, idx) => {
                   const key = mod.id ?? idx;
                   const open = key === expandedModule;
                   return (
-                    <div key={key} className="border border-gray-200 rounded-lg mb-3">
+                    <div key={key} className="border border-gray-200 dark:border-gray-700 rounded-lg mb-3">
                       <button
                         onClick={() => setExpandedModule(open ? null : key)}
-                        className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition text-left"
+                        className="w-full flex items-center justify-between p-4 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition text-left"
                       >
                         <div>
-                          <h3 className="font-semibold text-gray-900">{`Module ${idx + 1}: ${mod.title}`}</h3>
-                          {mod.description && <p className="text-sm text-gray-600">{mod.description}</p>}
+                          <h3 className="font-semibold text-gray-900 dark:text-white">{`Module ${idx + 1}: ${mod.title}`}</h3>
+                          {mod.description && <p className="text-sm text-gray-600 dark:text-gray-400">{mod.description}</p>}
                         </div>
-                        <IconChevronDown className={`text-gray-400 transition-transform ${open ? "rotate-180" : ""}`} />
+                        <IconChevronDown className={`text-gray-400 dark:text-gray-500 transition-transform ${open ? "rotate-180" : ""}`} />
                       </button>
                       {open && (
-                        <div className="border-t border-gray-200 bg-gray-50">
-                          {(mod.topics || []).map((t, i) => (
-                            <div key={i} className="px-4 py-3 flex items-center justify-between hover:bg-gray-100 transition">
-                              <span className="text-gray-700">{t.title}</span>
-                              {t.duration && <span className="text-sm text-gray-500">{t.duration}</span>}
-                            </div>
-                          ))}
+                        <div className="border-t border-gray-200 dark:border-gray-700 bg-gray-50 dark:bg-gray-900">
+                          {(mod.topics || []).map((t, i) => {
+                            const topicId = t.id || `${idx}-${i}`;
+                            return (
+                              <div key={i} className="px-4 py-3 flex items-center justify-between hover:bg-gray-100 dark:hover:bg-gray-800 transition group">
+                                <span className="text-gray-700 dark:text-gray-300">{t.title}</span>
+                                <div className="flex items-center gap-3">
+                                  {t.duration && <span className="text-sm text-gray-500 dark:text-gray-400">{t.duration}</span>}
+                                  {isEnrolled && (
+                                    <Link
+                                      to={`/courses/${course._id}/learn/${topicId}`}
+                                      className="opacity-0 group-hover:opacity-100 transition-opacity text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300"
+                                      title="Start this lesson"
+                                    >
+                                      <IconPlayCircle className="w-4 h-4" />
+                                    </Link>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
                       )}
                     </div>
@@ -390,15 +416,15 @@ export default function CourseDetails({ course: courseProp, onBack }) {
             </div>
 
             {/* Instructor */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4">About the Instructor</h2>
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">About the Instructor</h2>
               <div className="flex items-start gap-4">
-                <img src={instructorAvatar} alt={instructorName} className="w-20 h-20 rounded-full object-cover" />
+                <img src={instructorAvatar} alt={instructorName} className="w-20 h-20 rounded-full object-cover ring-2 ring-gray-200 dark:ring-gray-700" />
                 <div>
-                  <h3 className="text-xl font-bold">{instructorName}</h3>
-                  <p className="text-sm text-gray-500 mb-2">Instructor</p>
+                  <h3 className="text-xl font-bold text-gray-900 dark:text-white">{instructorName}</h3>
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">Instructor</p>
                   {course.createdBy?.email && (
-                    <p className="text-gray-600 mb-3 text-sm">{course.createdBy.email}</p>
+                    <p className="text-gray-600 dark:text-gray-300 mb-3 text-sm">{course.createdBy.email}</p>
                   )}
                 </div>
               </div>
@@ -407,7 +433,7 @@ export default function CourseDetails({ course: courseProp, onBack }) {
 
           {/* RIGHT — Info only */}
           <aside className="lg:col-span-1">
-            <div className="bg-white rounded-xl shadow-lg border border-gray-200 sticky top-8 overflow-hidden">
+            <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-200 dark:border-gray-700 sticky top-8 overflow-hidden">
               {course.image ? (
                 <img 
                   src={course.image} 
@@ -415,27 +441,27 @@ export default function CourseDetails({ course: courseProp, onBack }) {
                   className="w-full h-64 object-cover" 
                 />
               ) : (
-                <div className="w-full h-64 bg-gradient-to-br from-indigo-100 to-purple-100 flex items-center justify-center">
+                <div className="w-full h-64 bg-gradient-to-br from-indigo-100 dark:from-indigo-900/30 to-purple-100 dark:to-purple-900/30 flex items-center justify-center">
                   <span className="text-6xl">🎓</span>
                 </div>
               )}
               <div className="p-6 space-y-4">
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Duration</span>
-                    <span className="font-semibold text-gray-900">{course.duration}</span>
+                    <span className="text-gray-600 dark:text-gray-400">Duration</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">{course.duration}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Lessons</span>
-                    <span className="font-semibold text-gray-900">{totalLessons}</span>
+                    <span className="text-gray-600 dark:text-gray-400">Lessons</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">{totalLessons}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Category</span>
-                    <span className="font-semibold text-gray-900">{course.category}</span>
+                    <span className="text-gray-600 dark:text-gray-400">Category</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">{course.category}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Level</span>
-                    <span className="font-semibold text-gray-900">{course.level}</span>
+                    <span className="text-gray-600 dark:text-gray-400">Level</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">{course.level}</span>
                   </div>
                 </div>
 
@@ -446,32 +472,39 @@ export default function CourseDetails({ course: courseProp, onBack }) {
                       <>
                         <button
                           disabled
-                          className="w-full inline-flex justify-center items-center gap-2 px-6 py-3 bg-green-100 text-green-700 rounded-lg font-semibold cursor-not-allowed border border-green-300"
+                          className="w-full inline-flex justify-center items-center gap-2 px-6 py-3 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-lg font-semibold cursor-not-allowed border border-green-300 dark:border-green-700"
                         >
                           <span>✅</span>
                           Already Enrolled
                         </button>
                         {/* START LEARNING BUTTON */}
-                        <Link
-                          to={`/courses/${course._id}/learn/${firstLessonId}`}
-                          className="w-full inline-flex justify-center items-center gap-2 px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition shadow-lg hover:shadow-xl"
-                        >
-                          <IconPlayCircle />
-                          Start Learning
-                        </Link>
+                        {course.curriculum && course.curriculum[0]?.topics && course.curriculum[0].topics[0] ? (
+                          <Link
+                            to={`/courses/${course._id}/learn/${firstLessonId}`}
+                            className="w-full inline-flex justify-center items-center gap-2 px-6 py-3 bg-indigo-600 dark:bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-700 dark:hover:bg-indigo-600 transition shadow-lg hover:shadow-xl"
+                          >
+                            <IconPlayCircle />
+                            Start Learning
+                          </Link>
+                        ) : (
+                          <div className="w-full inline-flex justify-center items-center gap-2 px-6 py-3 bg-gray-300 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-lg font-semibold cursor-not-allowed">
+                            <IconPlayCircle />
+                            No Lessons Available
+                          </div>
+                        )}
                       </>
                     ) : (
                       <button
                         onClick={handleEnroll}
                         disabled={enrolling}
-                        className="w-full inline-flex justify-center px-6 py-3 bg-indigo-600 text-white rounded-lg font-semibold hover:bg-indigo-700 transition shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full inline-flex justify-center px-6 py-3 bg-indigo-600 dark:bg-indigo-500 text-white rounded-lg font-semibold hover:bg-indigo-700 dark:hover:bg-indigo-600 transition shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed"
                       >
                         {enrolling ? "Enrolling..." : "Enroll Now"}
                       </button>
                     )}
                     <Link
                       to="/enrollments"
-                      className="w-full inline-flex justify-center px-6 py-3 bg-gray-100 text-gray-900 rounded-lg font-semibold hover:bg-gray-200 transition border border-gray-300"
+                      className="w-full inline-flex justify-center px-6 py-3 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg font-semibold hover:bg-gray-200 dark:hover:bg-gray-600 transition border border-gray-300 dark:border-gray-600"
                     >
                       My Learning
                     </Link>
@@ -479,7 +512,7 @@ export default function CourseDetails({ course: courseProp, onBack }) {
                 ) : (
                   <Link
                     to="/courses"
-                    className="w-full inline-flex justify-center px-6 py-3 bg-gray-900 text-white rounded-lg font-semibold hover:bg-gray-800 transition"
+                    className="w-full inline-flex justify-center px-6 py-3 bg-gray-900 dark:bg-white dark:text-black text-white rounded-lg font-semibold hover:bg-gray-800 dark:hover:bg-gray-200 transition"
                   >
                     Browse More Courses
                   </Link>

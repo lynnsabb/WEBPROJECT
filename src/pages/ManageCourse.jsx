@@ -478,22 +478,22 @@ export default function ManageCourse() {
   // ---------- JSX ----------
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* Header */}
         <header className="mb-8">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">
+              <h1 className="text-3xl md:text-4xl font-bold text-gray-900 dark:text-white mb-2">
                 Manage Courses
               </h1>
-              <p className="text-gray-600 text-lg">
+              <p className="text-gray-600 dark:text-gray-300 text-lg">
                 Add, edit, and organize your courses easily.
               </p>
             </div>
             <button
               onClick={handleAddCourse}
-              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 text-white font-semibold rounded-xl hover:bg-indigo-700 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-indigo-600 dark:bg-indigo-500 text-white font-semibold rounded-xl hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-all duration-300 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
             >
               <IconPlus />
               Add New Course
@@ -503,13 +503,13 @@ export default function ManageCourse() {
           {/* Search */}
           <div className="mb-6">
             <div className="relative max-w-md">
-              <IconSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+              <IconSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 dark:text-gray-500" />
               <input
                 type="text"
                 placeholder="Search courses by title, instructor, or category..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white"
+                className="w-full pl-10 pr-4 py-3 border border-gray-300 dark:border-gray-700 rounded-xl focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-gray-500"
               />
             </div>
           </div>
@@ -521,8 +521,8 @@ export default function ManageCourse() {
                 key={category}
                 onClick={() => setSelectedCategory(category)}
                 className={`px-4 py-2 rounded-lg font-medium transition-all duration-300 ${selectedCategory === category
-                    ? "bg-indigo-600 text-white shadow-lg"
-                    : "bg-white text-gray-700 hover:bg-gray-100 border border-gray-200"
+                    ? "bg-indigo-600 dark:bg-indigo-500 text-white shadow-lg"
+                    : "bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 border border-gray-200 dark:border-gray-700"
                   }`}
               >
                 {category}
@@ -533,20 +533,20 @@ export default function ManageCourse() {
 
         {/* Loading state */}
         {loading && (
-          <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
+          <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
             <div className="text-5xl mb-3">⏳</div>
-            <p className="text-gray-500 text-lg">Loading courses...</p>
+            <p className="text-gray-500 dark:text-gray-400 text-lg">Loading courses...</p>
           </div>
         )}
 
         {/* Error state */}
         {error && !loading && (
-          <div className="text-center py-16 bg-white rounded-xl border border-red-200">
+          <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-xl border border-red-200 dark:border-red-800">
             <div className="text-5xl mb-3">⚠️</div>
-            <p className="text-red-600 text-lg mb-4">{error}</p>
+            <p className="text-red-600 dark:text-red-400 text-lg mb-4">{error}</p>
             <button
               onClick={() => window.location.reload()}
-              className="inline-flex items-center justify-center rounded-xl bg-black text-white px-4 py-2 hover:bg-black/90"
+              className="inline-flex items-center justify-center rounded-xl bg-black dark:bg-white dark:text-black text-white px-4 py-2 hover:bg-black/90 dark:hover:bg-gray-200 transition-colors"
             >
               Retry
             </button>
@@ -559,9 +559,9 @@ export default function ManageCourse() {
             {filteredCourses.map((course) => (
               <div
                 key={course._id}
-                className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-lg transition-all duration-300 hover:-translate-y-1"
+                className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg dark:hover:shadow-xl transition-all duration-300 hover:-translate-y-1"
               >
-                <div className="relative h-48 overflow-hidden bg-gradient-to-br from-purple-100 to-blue-100">
+                <div className="relative h-48 overflow-hidden bg-gradient-to-br from-purple-100 dark:from-purple-900/30 to-blue-100 dark:to-blue-900/30">
                   <img
                     src={
                       course.image ||
@@ -570,7 +570,7 @@ export default function ManageCourse() {
                     alt={course.title}
                     className="w-full h-full object-cover"
                   />
-                  <span className="absolute top-4 right-4 px-3 py-1 bg-green-500 text-white text-sm font-medium rounded-full">
+                  <span className="absolute top-4 right-4 px-3 py-1 bg-green-500 dark:bg-green-600 text-white text-sm font-medium rounded-full">
                     Free Course
                   </span>
                 </div>
@@ -578,42 +578,42 @@ export default function ManageCourse() {
                 <div className="p-6">
                   <div className="flex items-start justify-between gap-2 mb-3">
                     <div className="flex-1 min-w-0">
-                      <h3 className="text-xl font-bold text-gray-900 mb-2 line-clamp-2">
+                      <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-2 line-clamp-2">
                         {course.title}
                       </h3>
                       <div className="flex flex-wrap gap-2 mb-2">
-                        <span className="inline-block px-3 py-1 bg-gray-100 text-gray-700 text-sm font-medium rounded-full">
+                        <span className="inline-block px-3 py-1 bg-gray-100 dark:bg-gray-700 text-gray-700 dark:text-gray-300 text-sm font-medium rounded-full">
                           {course.category}
                         </span>
-                        <span className="inline-block px-3 py-1 bg-blue-100 text-blue-700 text-sm font-medium rounded-full">
+                        <span className="inline-block px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-sm font-medium rounded-full">
                           {course.level}
                         </span>
                       </div>
                     </div>
                   </div>
 
-                  <p className="text-sm text-gray-500 mb-2">
+                  <p className="text-sm text-gray-500 dark:text-gray-400 mb-2">
                     Instructor:{" "}
-                    <span className="font-medium text-gray-800">
+                    <span className="font-medium text-gray-800 dark:text-gray-200">
                       {typeof course.instructor === "string"
                         ? course.instructor
                         : course.instructor?.name || "Unknown"}
                     </span>
                   </p>
 
-                  <p className="text-sm text-gray-600 mb-4 line-clamp-2">
+                  <p className="text-sm text-gray-600 dark:text-gray-300 mb-4 line-clamp-2">
                     {course.description}
                   </p>
 
-                  <div className="flex items-center justify-between text-sm text-gray-600 border-t border-gray-200 pt-4 mb-4">
+                  <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
                     <div className="flex items-center gap-1">
                       <IconStar className="text-yellow-400" />
-                      <span className="font-semibold text-gray-900">
+                      <span className="font-semibold text-gray-900 dark:text-white">
                         {course.rating}
                       </span>
                     </div>
-                    <span className="text-gray-600">{course.duration}</span>
-                    <span className="text-gray-600">
+                    <span className="text-gray-600 dark:text-gray-400">{course.duration}</span>
+                    <span className="text-gray-600 dark:text-gray-400">
                       {course.students?.toLocaleString() || 0} students
                     </span>
                   </div>
@@ -621,14 +621,14 @@ export default function ManageCourse() {
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => handleEditCourse(course)}
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-indigo-50 text-indigo-600 font-medium rounded-lg hover:bg-indigo-100 transition-colors"
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 font-medium rounded-lg hover:bg-indigo-100 dark:hover:bg-indigo-900/50 transition-colors"
                     >
                       <IconEdit />
                       Edit
                     </button>
                     <button
                       onClick={() => handleDeleteClick(course)}
-                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-red-50 text-red-600 font-medium rounded-lg hover:bg-red-100 transition-colors"
+                      className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-2 bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-medium rounded-lg hover:bg-red-100 dark:hover:bg-red-900/50 transition-colors"
                     >
                       <IconTrash />
                       Delete
@@ -639,9 +639,9 @@ export default function ManageCourse() {
             ))}
           </div>
         ) : !loading && !error ? (
-          <div className="text-center py-16 bg-white rounded-xl border border-gray-200">
-            <p className="text-gray-500 text-lg mb-2">No courses found</p>
-            <p className="text-gray-400 text-sm">
+          <div className="text-center py-16 bg-white dark:bg-gray-800 rounded-xl border border-gray-200 dark:border-gray-700">
+            <p className="text-gray-500 dark:text-gray-400 text-lg mb-2">No courses found</p>
+            <p className="text-gray-400 dark:text-gray-500 text-sm">
               {selectedCategory !== "All" || searchQuery.trim()
                 ? "Try adjusting your filters or search query."
                 : "Start by adding your first course!"}
@@ -652,20 +652,20 @@ export default function ManageCourse() {
         {/* Add/Edit Modal */}
         {isModalOpen && (
           <div
-            className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4"
+            className="fixed inset-0 flex items-center justify-center bg-black/50 dark:bg-black/70 z-50 p-4"
             onClick={handleCloseModal}
           >
             <div
-              className="bg-white p-6 rounded-xl shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto"
+              className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-2xl max-h-[90vh] overflow-y-auto border border-gray-200 dark:border-gray-700"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-2xl font-bold text-gray-900">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white">
                   {editingCourse ? "Edit Course" : "Add New Course"}
                 </h2>
                 <button
                   onClick={handleCloseModal}
-                  className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                  className="p-2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
                 >
                   <IconX />
                 </button>
@@ -673,13 +673,13 @@ export default function ManageCourse() {
 
               <form onSubmit={handleSubmit} className="space-y-4">
                 {submitting && (
-                  <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm text-blue-700">
+                  <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3 text-sm text-blue-700 dark:text-blue-400">
                     {editingCourse ? "Updating course..." : "Creating course..."}
                   </div>
                 )}
                 {/* basic fields */}
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Course Title *
                   </label>
                   <input
@@ -689,13 +689,13 @@ export default function ManageCourse() {
                     onChange={handleInputChange}
                     required
                     placeholder="e.g., Advanced React Patterns"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Category *
                     </label>
                     <select
@@ -703,7 +703,7 @@ export default function ManageCourse() {
                       value={formData.category}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     >
                       <option value="Programming">Programming</option>
                       <option value="Data Science">Data Science</option>
@@ -716,7 +716,7 @@ export default function ManageCourse() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Level *
                     </label>
                     <select
@@ -724,7 +724,7 @@ export default function ManageCourse() {
                       value={formData.level}
                       onChange={handleInputChange}
                       required
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                     >
                       <option value="Beginner">Beginner</option>
                       <option value="Intermediate">Intermediate</option>
@@ -734,7 +734,7 @@ export default function ManageCourse() {
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Duration *
                   </label>
                   <input
@@ -744,13 +744,13 @@ export default function ManageCourse() {
                     onChange={handleInputChange}
                     required
                     placeholder="e.g., 20h"
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500"
                   />
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Rating
                     </label>
                     <input
@@ -762,12 +762,12 @@ export default function ManageCourse() {
                       max="5"
                       step="0.1"
                       placeholder="4.5"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                       Students
                     </label>
                     <input
@@ -777,13 +777,13 @@ export default function ManageCourse() {
                       onChange={handleInputChange}
                       min="0"
                       placeholder="0"
-                      className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500"
                     />
                   </div>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Image URL *
                   </label>
                   <input
@@ -793,12 +793,12 @@ export default function ManageCourse() {
                     onChange={handleInputChange}
                     required
                     placeholder="https://images.unsplash.com/..."
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500"
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                     Description *
                   </label>
                   <textarea
@@ -808,20 +808,20 @@ export default function ManageCourse() {
                     required
                     rows={3}
                     placeholder="Describe what students will learn in this course..."
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500"
                   />
                 </div>
 
                 {/* Modules & Lessons */}
-                <div className="border border-gray-200 rounded-lg p-4 space-y-4 bg-gray-50">
+                <div className="border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-4 bg-gray-50 dark:bg-gray-900/50">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-lg font-semibold text-gray-900">
+                    <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                       Modules & Lessons
                     </h3>
                     <button
                       type="button"
                       onClick={handleAddModuleClick}
-                      className="inline-flex items-center gap-2 px-3 py-1 text-sm bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                      className="inline-flex items-center gap-2 px-3 py-1 text-sm bg-indigo-600 dark:bg-indigo-500 text-white rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors"
                     >
                       <IconPlus />
                       Add Module
@@ -829,7 +829,7 @@ export default function ManageCourse() {
                   </div>
 
                   {formData.modules.length === 0 && (
-                    <p className="text-sm text-gray-500">
+                    <p className="text-sm text-gray-500 dark:text-gray-400">
                       No modules yet. Click &quot;Add Module&quot; to get started.
                     </p>
                   )}
@@ -838,16 +838,16 @@ export default function ManageCourse() {
                     {formData.modules.map((module, mIndex) => (
                       <div
                         key={module.id}
-                        className="bg-white border border-gray-200 rounded-lg p-4 space-y-3"
+                        className="bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg p-4 space-y-3"
                       >
                         <div className="flex items-center justify-between gap-2">
-                          <h4 className="font-semibold text-gray-800">
+                          <h4 className="font-semibold text-gray-800 dark:text-white">
                             Module {mIndex + 1}
                           </h4>
                           <button
                             type="button"
                             onClick={() => handleRemoveModule(mIndex)}
-                            className="inline-flex items-center gap-1 text-xs text-red-600 hover:text-red-700"
+                            className="inline-flex items-center gap-1 text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
                           >
                             <IconTrash />
                             Remove Module
@@ -856,7 +856,7 @@ export default function ManageCourse() {
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                               Module Title *
                             </label>
                             <input
@@ -871,11 +871,11 @@ export default function ManageCourse() {
                               }
                               required
                               placeholder="e.g., Getting Started"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-500"
                             />
                           </div>
                           <div>
-                            <label className="block text-xs font-medium text-gray-700 mb-1">
+                            <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                               Module Description
                             </label>
                             <input
@@ -889,20 +889,20 @@ export default function ManageCourse() {
                                 )
                               }
                               placeholder="Optional short description"
-                              className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-500"
                             />
                           </div>
                         </div>
 
                         <div className="mt-3 space-y-3">
                           <div className="flex items-center justify-between">
-                            <span className="text-sm font-medium text-gray-800">
+                            <span className="text-sm font-medium text-gray-800 dark:text-gray-200">
                               Lessons
                             </span>
                             <button
                               type="button"
                               onClick={() => handleAddLesson(mIndex)}
-                              className="inline-flex items-center gap-1 text-xs text-indigo-600 hover:text-indigo-700"
+                              className="inline-flex items-center gap-1 text-xs text-indigo-600 dark:text-indigo-400 hover:text-indigo-700 dark:hover:text-indigo-300"
                             >
                               <IconPlus />
                               Add Lesson
@@ -912,10 +912,10 @@ export default function ManageCourse() {
                           {module.lessons.map((lesson, lIndex) => (
                             <div
                               key={lesson.id}
-                              className="border border-dashed border-gray-300 rounded-md p-3 space-y-2 bg-gray-50"
+                              className="border border-dashed border-gray-300 dark:border-gray-600 rounded-md p-3 space-y-2 bg-gray-50 dark:bg-gray-900/50"
                             >
                               <div className="flex items-center justify-between">
-                                <span className="text-xs font-semibold text-gray-700">
+                                <span className="text-xs font-semibold text-gray-700 dark:text-gray-300">
                                   Lesson {lIndex + 1}
                                 </span>
                                 <button
@@ -923,7 +923,7 @@ export default function ManageCourse() {
                                   onClick={() =>
                                     handleRemoveLesson(mIndex, lIndex)
                                   }
-                                  className="inline-flex items-center gap-1 text-xs text-red-600 hover:text-red-700"
+                                  className="inline-flex items-center gap-1 text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300"
                                 >
                                   <IconTrash />
                                   Remove
@@ -932,7 +932,7 @@ export default function ManageCourse() {
 
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                 <div>
-                                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                                     Lesson Title *
                                   </label>
                                   <input
@@ -948,11 +948,11 @@ export default function ManageCourse() {
                                     }
                                     required
                                     placeholder="e.g., What is Python?"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-500"
                                   />
                                 </div>
                                 <div>
-                                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                                     Video URL *
                                   </label>
                                   <input
@@ -968,14 +968,14 @@ export default function ManageCourse() {
                                     }
                                     required
                                     placeholder="https://..."
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-500"
                                   />
                                 </div>
                               </div>
 
                               <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
                                 <div>
-                                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                                     Duration
                                   </label>
                                   <input
@@ -990,11 +990,11 @@ export default function ManageCourse() {
                                       )
                                     }
                                     placeholder="e.g., 12m"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-500"
                                   />
                                 </div>
                                 <div>
-                                  <label className="block text-xs font-medium text-gray-700 mb-1">
+                                  <label className="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">
                                     Lesson Description
                                   </label>
                                   <input
@@ -1009,7 +1009,7 @@ export default function ManageCourse() {
                                       )
                                     }
                                     placeholder="Brief description of this lesson"
-                                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                                    className="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-gray-400 dark:placeholder-gray-500"
                                   />
                                 </div>
                               </div>
@@ -1021,17 +1021,17 @@ export default function ManageCourse() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
+                <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200 dark:border-gray-700">
                   <button
                     type="button"
                     onClick={handleCloseModal}
-                    className="px-6 py-2 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors"
+                    className="px-6 py-2 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition-colors"
+                    className="px-6 py-2 bg-indigo-600 dark:bg-indigo-500 text-white font-medium rounded-lg hover:bg-indigo-700 dark:hover:bg-indigo-600 transition-colors"
                   >
                     {editingCourse ? "Update Course" : "Add Course"}
                   </button>
@@ -1044,31 +1044,31 @@ export default function ManageCourse() {
         {/* Delete Modal */}
         {isDeleteModalOpen && courseToDelete && (
           <div
-            className="fixed inset-0 flex items-center justify-center bg-black/50 z-50 p-4"
+            className="fixed inset-0 flex items-center justify-center bg-black/50 dark:bg-black/70 z-50 p-4"
             onClick={handleCancelDelete}
           >
             <div
-              className="bg-white p-6 rounded-xl shadow-lg w-full max-w-md"
+              className="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-lg w-full max-w-md border border-gray-200 dark:border-gray-700"
               onClick={(e) => e.stopPropagation()}
             >
-              <h2 className="text-2xl font-bold text-gray-900 mb-2">
+              <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
                 Delete Course
               </h2>
-              <p className="text-gray-600 mb-6">
+              <p className="text-gray-600 dark:text-gray-300 mb-6">
                 Are you sure you want to delete{" "}
-                <strong>"{courseToDelete.title}"</strong>? This action cannot
+                <strong className="text-gray-900 dark:text-white">"{courseToDelete.title}"</strong>? This action cannot
                 be undone.
               </p>
               <div className="flex items-center justify-end gap-3">
                 <button
                   onClick={handleCancelDelete}
-                  className="px-6 py-2 text-gray-700 font-medium rounded-lg hover:bg-gray-100 transition-colors"
+                  className="px-6 py-2 text-gray-700 dark:text-gray-300 font-medium rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={handleConfirmDelete}
-                  className="px-6 py-2 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors"
+                  className="px-6 py-2 bg-red-600 dark:bg-red-500 text-white font-medium rounded-lg hover:bg-red-700 dark:hover:bg-red-600 transition-colors"
                 >
                   Delete
                 </button>
@@ -1080,11 +1080,11 @@ export default function ManageCourse() {
         {/* Toast */}
         {toast && (
           <div
-            className={`fixed bottom-4 right-4 flex items-center gap-2 px-6 py-4 bg-white border-2 rounded-xl shadow-lg z-50 ${toast.type === "success" ? "border-green-500" : "border-red-500"
+            className={`fixed bottom-4 right-4 flex items-center gap-2 px-6 py-4 bg-white dark:bg-gray-800 border-2 rounded-xl shadow-lg z-50 ${toast.type === "success" ? "border-green-500 dark:border-green-400" : "border-red-500 dark:border-red-400"
               }`}
           >
-            <IconCheck className="text-green-500" />
-            <span className="text-gray-900 font-medium">{toast.message}</span>
+            <IconCheck className={toast.type === "success" ? "text-green-500 dark:text-green-400" : "text-red-500 dark:text-red-400"} />
+            <span className="text-gray-900 dark:text-white font-medium">{toast.message}</span>
           </div>
         )}
       </div>
