@@ -1,5 +1,6 @@
 // backend/seed/seedAll.js
 // Runs all seed scripts in the correct order
+// micheal
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { fileURLToPath } from 'url';
@@ -21,16 +22,16 @@ const runSeed = async (scriptName, description) => {
   console.log(`\n${'='.repeat(60)}`);
   console.log(`🌱 ${description}`);
   console.log(`${'='.repeat(60)}\n`);
-  
+
   try {
     const { stdout, stderr } = await execAsync(`node ${join(__dirname, scriptName)}`, {
       cwd: backendDir,
       env: { ...process.env },
     });
-    
+
     if (stdout) console.log(stdout);
     if (stderr && !stderr.includes('Warning')) console.error(stderr);
-    
+
     return true;
   } catch (error) {
     console.error(`❌ Error running ${scriptName}:`, error.message);
@@ -44,7 +45,7 @@ const runSeed = async (scriptName, description) => {
 const seedAll = async () => {
   console.log('\n🚀 Starting complete database seeding process...');
   console.log('📦 This will seed: Users → Courses → Enrollments\n');
-  
+
   // Check if MONGO_URI is set
   if (!process.env.MONGO_URI && !process.env.MONGODB_URI) {
     console.error('❌ Error: MONGO_URI or MONGODB_URI environment variable is not set');
@@ -61,7 +62,7 @@ const seedAll = async () => {
 
   for (const step of steps) {
     const success = await runSeed(step.script, step.description);
-    
+
     if (!success) {
       console.error(`\n❌ Failed to seed ${step.description}`);
       console.error('Stopping seeding process. Please fix the error and try again.');
@@ -77,7 +78,7 @@ const seedAll = async () => {
   console.log('   ✅ Courses seeded');
   console.log('   ✅ Enrollments seeded');
   console.log('\n🎉 Your MongoDB Atlas database is now populated!\n');
-  
+
   process.exit(0);
 };
 

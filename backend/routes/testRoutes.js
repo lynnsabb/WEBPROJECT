@@ -1,4 +1,5 @@
 // routes/testRoutes.js
+// micheal
 import express from 'express';
 import mongoose from 'mongoose';
 import Course from '../models/Course.js';
@@ -24,7 +25,7 @@ router.get('/db', async (req, res) => {
 
     // Attempt a simple query to verify connection works
     const testQuery = await Course.findOne().limit(1);
-    
+
     // If query succeeds, connection is working
     res.json({
       connected: true,
