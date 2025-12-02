@@ -6,7 +6,15 @@ import { useEffect, useState } from "react";
 // Dark mode icons
 function IconSun(props) {
   return (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      {...props}
+    >
       <circle cx="12" cy="12" r="5" />
       <line x1="12" y1="1" x2="12" y2="3" />
       <line x1="12" y1="21" x2="12" y2="23" />
@@ -22,60 +30,113 @@ function IconSun(props) {
 
 function IconMoon(props) {
   return (
-    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" {...props}>
+    <svg
+      viewBox="0 0 24 24"
+      width="20"
+      height="20"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      {...props}
+    >
       <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
     </svg>
   );
 }
 
-export default function Navbar() {
+export default function Navbar({ isHome = false }) {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
+
   const [menuOpen, setMenuOpen] = useState(false);
   const [darkMode, setDarkMode] = useState(() => {
-    // Check localStorage or system preference
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('darkMode');
-      if (stored !== null) return stored === 'true';
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("darkMode");
+      if (stored !== null) return stored === "true";
+      return window.matchMedia("(prefers-color-scheme: dark)").matches;
     }
     return false;
   });
 
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  // only transparent on top of home hero
+  const useTransparent = isHome && !isScrolled;
+
+  // dark mode side-effect
   useEffect(() => {
     if (darkMode) {
-      document.documentElement.classList.add('dark');
-      localStorage.setItem('darkMode', 'true');
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("darkMode", "true");
     } else {
-      document.documentElement.classList.remove('dark');
-      localStorage.setItem('darkMode', 'false');
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("darkMode", "false");
     }
   }, [darkMode]);
 
-  const toggleDarkMode = () => {
-    setDarkMode(!darkMode);
-  };
+  // scroll effect: on home → watch scroll; on other pages → always treated as "scrolled"
+  useEffect(() => {
+    if (!isHome) {
+      setIsScrolled(true);
+      return;
+    }
 
-  const onLogout = () => {
-    logout();
-    navigate("/"); // redirect instantly after logout
-  };
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
 
-  // Optional: close mobile menu on route change
+    handleScroll();
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, [isHome]);
+
+  // close mobile menu on back/forward
   useEffect(() => {
     const close = () => setMenuOpen(false);
     window.addEventListener("popstate", close);
     return () => window.removeEventListener("popstate", close);
   }, []);
 
+  const toggleDarkMode = () => setDarkMode((prev) => !prev);
+
+  const onLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  // classes for links depending on state
+  const navActive =
+    useTransparent ? "text-white" : "text-black dark:text-white";
+  const navInactive = useTransparent
+    ? "text-white/80 hover:text-white"
+    : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white";
+
+  const textLink = useTransparent
+    ? "text-white/90 hover:text-white"
+    : "text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white";
+
+  const darkToggleClasses = useTransparent
+    ? "p-2 rounded-lg text-white hover:bg-white/10 transition-colors"
+    : "p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors";
+
   return (
-    <header className="border-b bg-white dark:bg-gray-900 dark:border-gray-800">
+    <header
+      className={`${isHome ? "fixed top-0 left-0 right-0 z-50" : ""} ${
+        useTransparent
+          ? "border-b border-transparent bg-transparent"
+          : "border-b bg-white dark:bg-gray-900 dark:border-gray-800"
+      }`}
+    >
       <nav className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3">
-        {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center gap-2 font-semibold text-lg text-gray-900 dark:text-white"
-          >
+        
+        <Link
+          to="/"
+          className={`flex items-center gap-2 font-semibold text-lg ${
+            useTransparent
+              ? "text-white"
+              : "text-gray-900 dark:text-white"
+          }`}
+        >
           <img
             src="https://cdn-icons-png.flaticon.com/512/4431/4431898.png"
             alt="LearnHub Logo"
@@ -84,15 +145,13 @@ export default function Navbar() {
           LearnHub
         </Link>
 
-        {/* Desktop links */}
+        
         <div className="hidden md:flex items-center gap-6">
           <NavLink
             to="/"
             className={({ isActive }) =>
               `text-sm font-medium ${
-                isActive 
-                  ? "text-black dark:text-white" 
-                  : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
+                isActive ? navActive : navInactive
               }`
             }
           >
@@ -103,24 +162,20 @@ export default function Navbar() {
             to="/courses"
             className={({ isActive }) =>
               `text-sm font-medium ${
-                isActive 
-                  ? "text-black dark:text-white" 
-                  : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
+                isActive ? navActive : navInactive
               }`
             }
           >
             Courses
           </NavLink>
 
-          {/* Student-only link */}
+          
           {user?.role === "student" && (
             <NavLink
               to="/enrollments"
               className={({ isActive }) =>
                 `text-sm font-medium ${
-                  isActive 
-                    ? "text-black dark:text-white" 
-                    : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
+                  isActive ? navActive : navInactive
                 }`
               }
             >
@@ -128,15 +183,13 @@ export default function Navbar() {
             </NavLink>
           )}
 
-          {/* Instructor-only link */}
+          
           {user?.role === "instructor" && (
             <NavLink
               to="/manage"
               className={({ isActive }) =>
                 `text-sm font-medium ${
-                  isActive 
-                    ? "text-black dark:text-white" 
-                    : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
+                  isActive ? navActive : navInactive
                 }`
               }
             >
@@ -145,22 +198,22 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Auth buttons */}
+        
         <div className="hidden md:flex items-center gap-4">
-          {/* Dark Mode Toggle */}
+      
           <button
             onClick={toggleDarkMode}
-            className="p-2 rounded-lg text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors"
+            className={darkToggleClasses}
             aria-label="Toggle dark mode"
           >
             {darkMode ? <IconSun /> : <IconMoon />}
           </button>
-          
+
           {user ? (
             <>
               <NavLink
                 to="/profile"
-                className="text-sm text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+                className={`text-sm ${textLink}`}
               >
                 {user.name?.split(" ")[0] ?? "Profile"}
               </NavLink>
@@ -173,15 +226,16 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <Link
-                to="/login"
-                className="text-sm text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
-              >
+              <Link to="/login" className={`text-sm ${textLink}`}>
                 Log in
               </Link>
               <Link
                 to="/register"
-                className="rounded-xl bg-black dark:bg-white dark:text-black text-white text-sm px-4 py-2 hover:bg-black/90 dark:hover:bg-gray-200"
+                className={`rounded-xl text-sm px-4 py-2 font-semibold transition-colors ${
+                  useTransparent
+                    ? "bg-white text-indigo-700 hover:bg-indigo-50"
+                    : "bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-gray-200"
+                }`}
               >
                 Sign up
               </Link>
@@ -193,37 +247,57 @@ export default function Navbar() {
         <div className="md:hidden flex items-center gap-2">
           <button
             onClick={toggleDarkMode}
-            className="p-2 rounded-lg text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800"
+            className={darkToggleClasses}
             aria-label="Toggle dark mode"
           >
             {darkMode ? <IconSun /> : <IconMoon />}
           </button>
           <button
-            className="text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
-            onClick={() => setMenuOpen(!menuOpen)}
+            className={`text-lg ${
+              useTransparent
+                ? "text-white hover:text-gray-100"
+                : "text-gray-600 dark:text-gray-400 hover:text-black dark:hover:text-white"
+            }`}
+            onClick={() => setMenuOpen((open) => !open)}
           >
             ☰
           </button>
         </div>
       </nav>
 
-      {/* Mobile dropdown */}
+    
       {menuOpen && (
         <div className="md:hidden border-t bg-white dark:bg-gray-900 border-gray-200 dark:border-gray-800 px-4 py-3 space-y-3">
-          <NavLink to="/" onClick={() => setMenuOpen(false)} className="block text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">
+          <NavLink
+            to="/"
+            onClick={() => setMenuOpen(false)}
+            className="block text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+          >
             Home
           </NavLink>
-          <NavLink to="/courses" onClick={() => setMenuOpen(false)} className="block text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">
+          <NavLink
+            to="/courses"
+            onClick={() => setMenuOpen(false)}
+            className="block text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+          >
             Courses
           </NavLink>
 
           {user?.role === "student" && (
-            <NavLink to="/enrollments" onClick={() => setMenuOpen(false)} className="block text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">
+            <NavLink
+              to="/enrollments"
+              onClick={() => setMenuOpen(false)}
+              className="block text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+            >
               My Learning
             </NavLink>
           )}
           {user?.role === "instructor" && (
-            <NavLink to="/manage" onClick={() => setMenuOpen(false)} className="block text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">
+            <NavLink
+              to="/manage"
+              onClick={() => setMenuOpen(false)}
+              className="block text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+            >
               Manage Courses
             </NavLink>
           )}
@@ -232,7 +306,11 @@ export default function Navbar() {
 
           {user ? (
             <>
-              <NavLink to="/profile" onClick={() => setMenuOpen(false)} className="block text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">
+              <NavLink
+                to="/profile"
+                onClick={() => setMenuOpen(false)}
+                className="block text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+              >
                 Profile
               </NavLink>
               <button
@@ -247,10 +325,18 @@ export default function Navbar() {
             </>
           ) : (
             <>
-              <NavLink to="/login" onClick={() => setMenuOpen(false)} className="block text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">
+              <NavLink
+                to="/login"
+                onClick={() => setMenuOpen(false)}
+                className="block text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+              >
                 Log in
               </NavLink>
-              <NavLink to="/register" onClick={() => setMenuOpen(false)} className="block text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white">
+              <NavLink
+                to="/register"
+                onClick={() => setMenuOpen(false)}
+                className="block text-gray-700 dark:text-gray-300 hover:text-black dark:hover:text-white"
+              >
                 Sign up
               </NavLink>
             </>

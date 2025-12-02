@@ -20,12 +20,14 @@ export default function App() {
   const location = useLocation();
 
   // Hide Navbar and Footer on lesson viewer page
-  const isLessonPage = location.pathname.includes('/learn/');
+  const isLessonPage = location.pathname.includes("/learn/");
+  const isHomePage = location.pathname === "/";
 
   return (
     <div className="min-h-screen flex flex-col bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
-      {!isLessonPage && <Navbar />}
-      <main className={`flex-1 ${!isLessonPage ? 'max-w-7xl mx-auto w-full px-4 py-8' : ''}`}>
+      {!isLessonPage && <Navbar isHome={isHomePage} />}
+
+      <main className="flex-1 w-full">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/courses" element={<Courses />} />
@@ -87,6 +89,7 @@ export default function App() {
           <Route path="*" element={<Navigate to="/404" replace />} />
         </Routes>
       </main>
+
       {!isLessonPage && <Footer />}
     </div>
   );
