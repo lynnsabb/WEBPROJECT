@@ -10,7 +10,8 @@
     "seed:courses": "node ./seed/seedCourses.js",
     "seed:users": "node ./seed/seedUsers.js",
     "seed:enrollments": "node ./seed/seedEnrollments.js",
-    "seed:all": "node ./seed/seedAll.js"
+    "seed:all": "node ./seed/seedAll.js",
+    "recalculate:stats": "node ./utils/recalculateCourseStats.js"
   },
   "keywords": [],
   "author": "",

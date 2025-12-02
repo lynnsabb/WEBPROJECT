@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect, useCallback } from "react";
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../state/auth.jsx";
 
@@ -15,6 +15,7 @@ function IconCheckCircle(props) {
 
 export default function Enrollments() {
   const { user } = useAuth();
+  const location = useLocation();
   const [enrollments, setEnrollments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -38,6 +39,7 @@ export default function Enrollments() {
   }
 
   // Fetch user's enrollments from API
+<<<<<<< Updated upstream
   useEffect(() => {
     const fetchEnrollments = async () => {
       try {
@@ -99,13 +101,67 @@ export default function Enrollments() {
           setError("An unexpected error occurred. Please try again.");
         }
       } finally {
+=======
+  const fetchEnrollments = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError("");
+      
+      const token = localStorage.getItem("ctm_token");
+      if (!token) {
+        setError("Please log in to view your enrollments");
+>>>>>>> Stashed changes
         setLoading(false);
+        return;
+      }
+
+      const response = await axios.get(
+        "http://localhost:5000/api/enrollments/me",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Filter out enrollments where the course was deleted (courseId is null)
+      const validEnrollments = (response.data || []).filter(
+        (enrollment) => enrollment.courseId && enrollment.courseId !== null
+      );
+      setEnrollments(validEnrollments);
+    } catch (err) {
+      if (err.response && err.response.data) {
+        setError(err.response.data.message || "Failed to load enrollments");
+      } else if (err.request) {
+        setError("Unable to connect to server. Please check if the backend is running.");
+      } else {
+        setError("An unexpected error occurred. Please try again.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  // Fetch enrollments on mount and when location changes (navigation back to page)
+  useEffect(() => {
+    fetchEnrollments();
+  }, [location.pathname, fetchEnrollments]);
+
+  // Also refresh when page becomes visible (user switches back to tab)
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'visible') {
+        fetchEnrollments();
       }
     };
 
-    fetchEnrollments();
-  }, []);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+    };
+  }, [fetchEnrollments]);
 
+<<<<<<< Updated upstream
   // Refresh enrollments when page becomes visible (user navigates back)
   useEffect(() => {
     const handleVisibilityChange = () => {
@@ -143,6 +199,15 @@ export default function Enrollments() {
   }, []);
 
   const completedCount = enrollments.filter((e) => e.completed).length;
+=======
+  // Filter out any enrollments with deleted courses (safety check)
+  const validEnrollments = enrollments.filter(
+    (enrollment) => enrollment.courseId && enrollment.courseId !== null
+  );
+  
+  // Count completed courses (only from valid enrollments)
+  const completedCount = validEnrollments.filter((e) => e.completed === true).length;
+>>>>>>> Stashed changes
 
   return (
     <section className="max-w-7xl mx-auto px-4 py-10">
@@ -157,7 +222,7 @@ export default function Enrollments() {
             <div className="text-sm text-gray-700 font-medium">Enrolled Courses</div>
             <div className="text-gray-400 text-lg">📘</div>
           </div>
-          <div className="text-2xl font-bold mt-2">{enrollments.length}</div>
+          <div className="text-2xl font-bold mt-2">{validEnrollments.length}</div>
           <div className="text-xs text-gray-500">Active enrollments</div>
         </div>
 
@@ -189,12 +254,17 @@ export default function Enrollments() {
             Retry
           </button>
         </div>
-      ) : enrollments.length > 0 ? (
+      ) : validEnrollments.length > 0 ? (
         <>
           <h2 className="text-2xl font-bold mb-4 mt-2">Your Courses</h2>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+<<<<<<< Updated upstream
             {enrollments.map((enrollment) => {
               const course = enrollment.courseId || enrollment.course;
+=======
+            {validEnrollments.map((enrollment) => {
+              const course = enrollment.courseId;
+>>>>>>> Stashed changes
               const done = enrollment.completed;
               const progress = enrollment.progress || 0;
               

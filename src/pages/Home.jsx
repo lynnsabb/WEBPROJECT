@@ -262,16 +262,18 @@ export default function Home() {
     setNewsletterEmail("");
   };
 
-  // Get learning path courses
-  const getPathCourses = (courseIds) => {
-    // For learning paths, we'll use the first few courses from the fetched courses
-    // since courseIds in mock data are numeric but MongoDB uses _id
-    return courses.slice(0, courseIds.length);
+  // Get learning path courses based on level
+  const getPathCourses = (pathLevel) => {
+    // Filter courses by level to show different courses for each path
+    const filteredCourses = courses.filter(course => course.level === pathLevel);
+    // If no courses match the level, return empty array
+    return filteredCourses.length > 0 ? filteredCourses : courses.slice(0, 4);
   };
 
   return (
     <div className="min-h-screen bg-white">
       {/* Hero Section */}
+<<<<<<< Updated upstream
       <section className="relative bg-gradient-to-br from-blue-600 via-indigo-600 to-purple-600 text-white overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-blue-800/20 to-purple-800/20"></div>
         <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjA1KSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30"></div>
@@ -279,6 +281,32 @@ export default function Home() {
           <div className="max-w-3xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
               Empower Your Learning Journey
+=======
+      <section className="relative bg-gradient-to-br from-indigo-600 via-purple-600 to-indigo-700 dark:from-indigo-800 dark:via-purple-800 dark:to-indigo-900 text-white overflow-x-hidden">
+        {/* Animated gradient overlay */}
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-700/50 via-purple-600/40 to-indigo-800/50 dark:from-indigo-900/60 dark:via-purple-900/50 dark:to-indigo-950/60 overflow-hidden"></div>
+        
+        {/* Subtle pattern overlay */}
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGRlZnM+PHBhdHRlcm4gaWQ9ImdyaWQiIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSI+PHBhdGggZD0iTSAxMCAwIEwgMCAwIDAgMTAiIGZpbGw9Im5vbmUiIHN0cm9rZT0icmdiYSgyNTUsMjU1LDI1NSwwLjAzKSIgc3Ryb2tlLXdpZHRoPSIxIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2dyaWQpIi8+PC9zdmc+')] opacity-30"></div>
+        
+        {/* Decorative circles */}
+        <div className="absolute top-20 right-10 w-72 h-72 bg-purple-500/20 rounded-full blur-3xl overflow-hidden"></div>
+        <div className="absolute bottom-20 left-10 w-96 h-96 bg-indigo-500/20 rounded-full blur-3xl overflow-hidden"></div>
+        
+        <div className="relative max-w-7xl mx-auto px-4 pt-16 pb-24 md:pt-20 md:pb-32 lg:pt-24 lg:pb-36">
+          <div className="max-w-4xl overflow-visible">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-md border border-white/20 rounded-full text-sm font-medium text-white/90 mb-6">
+              <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></span>
+              Free Online Learning Platform
+            </div>
+            
+            <h1 className="text-5xl md:text-6xl lg:text-7xl font-extrabold mb-14 leading-[1.5] tracking-tight overflow-visible">
+              <span className="block mb-3">Empower Your</span>
+              <span className="block bg-gradient-to-r from-white via-purple-100 to-indigo-100 bg-clip-text text-transparent mt-4 pb-2">
+                Learning Journey
+              </span>
+>>>>>>> Stashed changes
             </h1>
             <p className="text-xl md:text-2xl text-blue-100 mb-8 leading-relaxed">
               Explore Free Courses and Learn Anytime, Anywhere.
@@ -485,7 +513,7 @@ export default function Home() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {learningPaths.map((path, index) => {
-              const pathCourses = getPathCourses(path.courses);
+              const pathCourses = getPathCourses(path.level);
               return (
                 <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-200 p-6 hover:shadow-lg transition-all duration-300">
                   <div className={`inline-block px-4 py-2 rounded-lg font-semibold mb-4 ${

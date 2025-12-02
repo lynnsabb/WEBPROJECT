@@ -7,6 +7,7 @@ import {
   createCourse,
   updateCourse,
   deleteCourse,
+  getInstructorUniqueStudents,
 } from '../controllers/courseController.js';
 import { authMiddleware } from '../middleware/authMiddleware.js';
 import { requireInstructor } from '../middleware/roleMiddleware.js';
@@ -20,6 +21,13 @@ const router = express.Router();
  * @access  Public
  */
 router.get('/', getAllCourses);
+
+/**
+ * @route   GET /api/courses/instructor/:instructorId/students
+ * @desc    Get unique student count for an instructor
+ * @access  Public
+ */
+router.get('/instructor/:instructorId/students', getInstructorUniqueStudents);
 
 /**
  * @route   GET /api/courses/:id

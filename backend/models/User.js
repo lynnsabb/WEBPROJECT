@@ -31,6 +31,21 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+<<<<<<< Updated upstream
+=======
+// Note: Email index is automatically created by unique: true option above
+// No need for explicit index() call as it creates a duplicate
+
+// Ensure email is unique with better error message
+userSchema.post('save', function(error, doc, next) {
+  if (error.name === 'MongoServerError' && error.code === 11000) {
+    next(new Error('Email already exists'));
+  } else {
+    next(error);
+  }
+});
+
+>>>>>>> Stashed changes
 const User = mongoose.model('User', userSchema);
 
 export default User;

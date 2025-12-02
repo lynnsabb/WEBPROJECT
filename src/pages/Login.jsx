@@ -154,7 +154,11 @@ export default function Login() {
             <div>
               <label
                 htmlFor="password"
+<<<<<<< Updated upstream
                 className="block text-sm font-medium mb-1"
+=======
+                className="block text-sm font-medium mb-1 text-gray-900 dark:text-gray-200"
+>>>>>>> Stashed changes
               >
                 Password
               </label>

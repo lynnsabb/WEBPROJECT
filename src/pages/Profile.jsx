@@ -8,7 +8,11 @@ export default function Profile() {
   const navigate = useNavigate();
   const [enrollments, setEnrollments] = useState([]);
   const [instructorCourses, setInstructorCourses] = useState([]);
+<<<<<<< Updated upstream
   const [uniqueStudentCount, setUniqueStudentCount] = useState(0);
+=======
+  const [uniqueStudentsCount, setUniqueStudentsCount] = useState(0);
+>>>>>>> Stashed changes
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -61,6 +65,7 @@ export default function Profile() {
             );
             setInstructorCourses(myCourses);
 
+<<<<<<< Updated upstream
             // Fetch enrollments to count unique students
             // The backend already filters enrollments for instructor's courses
             try {
@@ -83,11 +88,30 @@ export default function Profile() {
               console.error("Error fetching enrollments for student count:", err);
               // Fallback to summing course students if enrollment fetch fails
               setUniqueStudentCount(myCourses.reduce((s, c) => s + (c.students || 0), 0));
+=======
+            // Fetch unique student count across all instructor's courses
+            try {
+              const studentsResponse = await axios.get(
+                `http://localhost:5000/api/courses/instructor/${user._id}/students`
+              );
+              const uniqueCount = studentsResponse.data.uniqueStudents || 0;
+              console.log('Unique students count from API:', uniqueCount);
+              setUniqueStudentsCount(uniqueCount);
+            } catch (err) {
+              console.error("Error fetching unique students count:", err);
+              console.error("Error details:", err.response?.data || err.message);
+              // Don't use fallback - it would give wrong count. Set to 0 if API fails.
+              setUniqueStudentsCount(0);
+>>>>>>> Stashed changes
             }
           } catch (err) {
             console.error("Error fetching courses:", err);
             setInstructorCourses([]);
+<<<<<<< Updated upstream
             setUniqueStudentCount(0);
+=======
+            setUniqueStudentsCount(0);
+>>>>>>> Stashed changes
           }
         }
       } catch (err) {
@@ -261,7 +285,11 @@ export default function Profile() {
                 <StatCard title="Your Courses" value={instructorCourses.length} icon="📘" />
                 <StatCard
                   title="Total Students"
+<<<<<<< Updated upstream
                   value={uniqueStudentCount}
+=======
+                  value={uniqueStudentsCount}
+>>>>>>> Stashed changes
                   icon="👥"
                 />
               </div>

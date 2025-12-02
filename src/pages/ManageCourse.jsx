@@ -355,6 +355,7 @@ export default function ManageCourse() {
         return;
       }
 
+<<<<<<< Updated upstream
       // Custom validation - only check top-level required fields
       if (!formData.title?.trim()) {
         showToast("❌ Course title is required", "error");
@@ -380,10 +381,16 @@ export default function ManageCourse() {
       // Validate that at least one module is required
       if (!formData.modules || formData.modules.length === 0) {
         showToast("❌ At least one module is required", "error");
+=======
+      // Validate that at least one module is required
+      if (!formData.modules || formData.modules.length === 0) {
+        showToast("❌ Please add at least one module to the course", "error");
+>>>>>>> Stashed changes
         setSubmitting(false);
         return;
       }
 
+<<<<<<< Updated upstream
       // Validate all modules and lessons - all fields are required
       for (let mIndex = 0; mIndex < formData.modules.length; mIndex++) {
         const module = formData.modules[mIndex];
@@ -423,6 +430,32 @@ export default function ManageCourse() {
       if (formattedDuration && /^\d+$/.test(formattedDuration)) {
         // If it's just numbers, add "h"
         formattedDuration = formattedDuration + "h";
+=======
+      // Validate that each module has a title
+      const modulesWithoutTitle = formData.modules.filter(m => !m.title || m.title.trim() === "");
+      if (modulesWithoutTitle.length > 0) {
+        showToast("❌ All modules must have a title", "error");
+        setSubmitting(false);
+        return;
+      }
+
+      // Validate that each module has at least one lesson
+      const modulesWithoutLessons = formData.modules.filter(m => !m.lessons || m.lessons.length === 0);
+      if (modulesWithoutLessons.length > 0) {
+        showToast("❌ Each module must have at least one lesson", "error");
+        setSubmitting(false);
+        return;
+      }
+
+      // Validate that each lesson has a title
+      for (const module of formData.modules) {
+        const lessonsWithoutTitle = module.lessons.filter(l => !l.title || l.title.trim() === "");
+        if (lessonsWithoutTitle.length > 0) {
+          showToast("❌ All lessons must have a title", "error");
+          setSubmitting(false);
+          return;
+        }
+>>>>>>> Stashed changes
       }
 
       const curriculum = mapModulesToCurriculum(formData.modules);
@@ -431,10 +464,14 @@ export default function ManageCourse() {
         description: formData.description,
         category: formData.category,
         level: formData.level,
+<<<<<<< Updated upstream
         duration: formattedDuration,
         // Don't send rating or students - these are managed automatically by the backend
         // rating: 0 (new courses start with 0)
         // students: 0 (new courses start with 0, increments on enrollment)
+=======
+        duration: formData.duration,
+>>>>>>> Stashed changes
         image: formData.image,
         curriculum: curriculum,
         learningPoints: [], // Can be added later if needed
@@ -664,9 +701,21 @@ export default function ManageCourse() {
                     {course.description}
                   </p>
 
+<<<<<<< Updated upstream
                   <div className="flex items-center justify-between text-sm text-gray-600 border-t border-gray-200 pt-4 mb-4">
                     <span className="text-gray-600">{course.duration}</span>
                     <span className="text-gray-600">
+=======
+                  <div className="flex items-center justify-between text-sm text-gray-600 dark:text-gray-400 border-t border-gray-200 dark:border-gray-700 pt-4 mb-4">
+                    <div className="flex items-center gap-1">
+                      <IconStar className="text-yellow-400" />
+                      <span className="font-semibold text-gray-900 dark:text-white">
+                        {course.rating ? course.rating.toFixed(1) : '0.0'}
+                      </span>
+                    </div>
+                    <span className="text-gray-600 dark:text-gray-400">{course.duration}</span>
+                    <span className="text-gray-600 dark:text-gray-400">
+>>>>>>> Stashed changes
                       {course.students?.toLocaleString() || 0} students
                     </span>
                   </div>
@@ -797,6 +846,10 @@ export default function ManageCourse() {
                   />
                 </div>
 
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-1">
                     Image URL *
@@ -846,6 +899,15 @@ export default function ManageCourse() {
                     </button>
                   </div>
 
+<<<<<<< Updated upstream
+=======
+                  {formData.modules.length === 0 && (
+                    <div className="flex items-center gap-2 text-sm text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/50 rounded-md px-3 py-2">
+                      <span>⚠️</span>
+                      <span>At least one module is required. Click &quot;Add Module&quot; to get started.</span>
+                    </div>
+                  )}
+>>>>>>> Stashed changes
 
                   <div className="space-y-4">
                     {formData.modules.map((module, mIndex) => (
