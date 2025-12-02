@@ -20,36 +20,35 @@
 The Course Tutorial Management (CTM) System is a full-stack web application that allows instructors to create and manage online courses while enabling students to enroll, complete lessons, track their progress, and submit course reviews.
 
 ## Primary Data Entities  
-1. **Users**  
+1. Users  
    - Students: browse courses, enroll, track progress, submit reviews  
    - Instructors: create, edit, and manage course content  
 
-2. **Courses**  
+2. Courses  
    - Title, description, category, level, duration, rating  
    - Curriculum (modules and topics)  
    - Learning objectives  
    - Video content (YouTube, Vimeo, direct video URLs)
 
-3. **Enrollments**  
+3. Enrollments  
    - Tracks student-course relationships  
    - Progress (0–100%)  
    - Completed lessons  
    - Completion status  
 
-4. **Reviews**  
+4. Reviews  
    - Rating (1–5 stars)  
-   - Optional comment  
 
 ---
 ## Deployed Application Links
 
 ### Frontend
-🔗 **Live Frontend Application:** https://webproject-blush-chi.vercel.app/
+🔗 **Live Frontend Application:**  https://webproject-blush-chi.vercel.app/
 
 ### Backend API
-🔗 **Live Backend API:** [Add your deployed backend URL here]
-- Deployed on: Render/Cyclic/Heroku (specify your platform)
-- Base URL: `https://your-backend-url.com/api`
+🔗 **Live Backend API:** https://webproject-1-kssl.onrender.com
+- Deployed on: Render
+- Base URL: https://webproject-1-kssl.onrender.com/api
 
 ---
 
@@ -162,22 +161,32 @@ npm run dev
 
 ### Base URL
 - **Local:** `http://localhost:5000/api`
-- **Production:** `[Your deployed backend URL]/api`
+- **Production:** https://webproject-1-kssl.onrender.com/api
 
 
 ### Authentication Endpoints
 
-#### 1. Register User
-- **Endpoint:** `POST /api/auth/register`
-- **Access:** Public
-- **Description:** Register a new user account
-- **Request Body:**
+## API Documentation
+
+### Base URLs
+Local: `http://localhost:5000/api`  
+Production: `https://webproject-1-kssl.onrender.com/api`
+
+---
+
+# Authentication Endpoints
+
+### 1. Register User
+**Endpoint:** `POST /auth/register`  
+**Access:** Public  
+**Description:** Creates a new user account.  
+**Request Body:**
 ```json
 {
   "name": "John Doe",
   "email": "john@example.com",
   "password": "password123",
-  "role": "student"  // or "instructor"
+  "role": "student"
 }
 ```
 
