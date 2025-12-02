@@ -593,8 +593,9 @@ or
   - Student dashboard
 
 - **Micheal**: 
-  - Course listing and filtering
-  - Course display components
+  - Course Listing Page
+  - Manage courses Page
+  - Custom video player for course content
 
 - **Lynn**: 
   - Course details pages
