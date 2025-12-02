@@ -3,12 +3,43 @@
 import mongoose from 'mongoose';
 import Course from '../models/Course.js';
 import User from '../models/User.js';
+import Enrollment from '../models/Enrollment.js';
+import Review from '../models/Review.js';
 
 // GET /api/courses - Get all courses (public)
 export const getAllCourses = async (req, res, next) => {
   try {
     const courses = await Course.find().populate('createdBy', 'name email').sort({ createdAt: -1 });
-    res.json(courses);
+    
+    // Recalculate student counts and ratings for all courses to ensure accuracy
+    // This fixes any inconsistencies from old data
+    const updatedCourses = await Promise.all(courses.map(async (course) => {
+      try {
+        // Recalculate student count from enrollments
+        const actualStudentCount = await Enrollment.countDocuments({ courseId: course._id });
+        if (course.students !== actualStudentCount) {
+          await Course.findByIdAndUpdate(course._id, { students: actualStudentCount });
+          course.students = actualStudentCount;
+        }
+        
+        // Recalculate rating from reviews
+        const reviews = await Review.find({ courseId: course._id });
+        const averageRating = reviews.length > 0
+          ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) * 10) / 10
+          : 0;
+        if (course.rating !== averageRating) {
+          await Course.findByIdAndUpdate(course._id, { rating: averageRating });
+          course.rating = averageRating;
+        }
+        
+        return course;
+      } catch (err) {
+        console.error(`Error recalculating stats for course ${course._id}:`, err);
+        return course; // Return original course if recalculation fails
+      }
+    }));
+    
+    res.json(updatedCourses);
   } catch (error) {
     console.error('Get all courses error:', error);
     next(error);
@@ -24,6 +55,24 @@ export const getCourseById = async (req, res, next) => {
       return res.status(404).json({ message: 'Course not found' });
     }
     
+    // Recalculate student count from enrollments to ensure accuracy
+    const actualStudentCount = await Enrollment.countDocuments({ courseId: course._id });
+    if (course.students !== actualStudentCount) {
+      await Course.findByIdAndUpdate(course._id, { students: actualStudentCount });
+      course.students = actualStudentCount;
+    }
+    
+    // Recalculate rating from reviews to ensure accuracy
+    const reviews = await Review.find({ courseId: course._id });
+    const averageRating = reviews.length > 0
+      ? Math.round((reviews.reduce((sum, r) => sum + r.rating, 0) / reviews.length) * 10) / 10
+      : 0;
+    if (course.rating !== averageRating) {
+      await Course.findByIdAndUpdate(course._id, { rating: averageRating });
+      course.rating = averageRating;
+    }
+    
+    // Return course with corrected values
     res.json(course);
   } catch (error) {
     console.error('Get course by ID error:', error);
@@ -40,8 +89,6 @@ export const createCourse = async (req, res, next) => {
       category,
       level,
       duration,
-      rating,
-      students,
       image,
       curriculum,
       learningPoints,
@@ -68,8 +115,8 @@ export const createCourse = async (req, res, next) => {
       category,
       level,
       duration,
-      rating: rating || 0,
-      students: students || 0,
+      rating: 0, // Automatically calculated from student reviews
+      students: 0, // Automatically calculated from enrollments
       image: image || '',
       curriculum: curriculum || [],
       learningPoints: learningPoints || [],
@@ -112,8 +159,6 @@ export const updateCourse = async (req, res, next) => {
       category,
       level,
       duration,
-      rating,
-      students,
       image,
       curriculum,
       learningPoints,
@@ -124,8 +169,8 @@ export const updateCourse = async (req, res, next) => {
     if (category) course.category = category;
     if (level) course.level = level;
     if (duration !== undefined) course.duration = duration;
-    if (rating !== undefined) course.rating = rating;
-    if (students !== undefined) course.students = students;
+    // Rating is managed by the review system, not manually by instructors
+    // Students count is automatically calculated from enrollments
     if (image !== undefined) course.image = image;
     if (curriculum !== undefined) course.curriculum = curriculum;
     if (learningPoints !== undefined) course.learningPoints = learningPoints;
@@ -140,6 +185,42 @@ export const updateCourse = async (req, res, next) => {
     res.json(updatedCourse);
   } catch (error) {
     console.error('Update course error:', error);
+    next(error);
+  }
+};
+
+// GET /api/courses/instructor/:instructorId/students - Get unique student count for an instructor
+export const getInstructorUniqueStudents = async (req, res, next) => {
+  try {
+    const { instructorId } = req.params;
+
+    // Validate ObjectId format
+    if (!mongoose.Types.ObjectId.isValid(instructorId)) {
+      return res.status(400).json({ message: 'Invalid instructor ID format' });
+    }
+
+    // Get all courses created by this instructor
+    const courses = await Course.find({ createdBy: new mongoose.Types.ObjectId(instructorId) }).select('_id');
+    const courseIds = courses.map(c => c._id);
+
+    if (courseIds.length === 0) {
+      return res.json({ uniqueStudents: 0 });
+    }
+
+    // Get all unique user IDs from enrollments across all instructor's courses
+    // Using distinct to get unique userIds only
+    const uniqueStudentIds = await Enrollment.distinct('userId', {
+      courseId: { $in: courseIds }
+    });
+
+    // Convert to strings and filter out any null/undefined values
+    const validStudentIds = uniqueStudentIds.filter(id => id != null);
+
+    console.log(`Instructor ${instructorId}: Found ${courseIds.length} courses, ${validStudentIds.length} unique students`);
+
+    res.json({ uniqueStudents: validStudentIds.length });
+  } catch (error) {
+    console.error('Get instructor unique students error:', error);
     next(error);
   }
 };

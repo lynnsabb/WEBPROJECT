@@ -8,6 +8,7 @@ export default function Profile() {
   const navigate = useNavigate();
   const [enrollments, setEnrollments] = useState([]);
   const [instructorCourses, setInstructorCourses] = useState([]);
+  const [uniqueStudentsCount, setUniqueStudentsCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -59,9 +60,25 @@ export default function Profile() {
               (course) => course.createdBy && String(course.createdBy._id || course.createdBy) === String(user._id)
             );
             setInstructorCourses(myCourses);
+
+            // Fetch unique student count across all instructor's courses
+            try {
+              const studentsResponse = await axios.get(
+                `http://localhost:5000/api/courses/instructor/${user._id}/students`
+              );
+              const uniqueCount = studentsResponse.data.uniqueStudents || 0;
+              console.log('Unique students count from API:', uniqueCount);
+              setUniqueStudentsCount(uniqueCount);
+            } catch (err) {
+              console.error("Error fetching unique students count:", err);
+              console.error("Error details:", err.response?.data || err.message);
+              // Don't use fallback - it would give wrong count. Set to 0 if API fails.
+              setUniqueStudentsCount(0);
+            }
           } catch (err) {
             console.error("Error fetching courses:", err);
             setInstructorCourses([]);
+            setUniqueStudentsCount(0);
           }
         }
       } catch (err) {
@@ -88,7 +105,6 @@ export default function Profile() {
   const stats = {
     enrolled: enrollments.length,
     completed: enrollments.filter((e) => e.completed).length,
-    totalHours: 0, // Can be calculated from course durations if needed
     certificates: enrollments.filter((e) => e.completed).length,
   };
 
@@ -161,10 +177,9 @@ export default function Profile() {
         <>
               {isStudent && (
             <>
-              <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <div className="grid gap-4 md:grid-cols-3">
                 <StatCard title="Courses Enrolled" value={stats.enrolled} icon="📚" />
                 <StatCard title="Courses Completed" value={stats.completed} icon="🏆" />
-                <StatCard title="Total Learning Hours" value={Math.round(stats.totalHours)} icon="⏱️" />
                 <StatCard title="Certificates Earned" value={stats.certificates} icon="🎓" />
               </div>
 
@@ -243,7 +258,7 @@ export default function Profile() {
                 <StatCard title="Your Courses" value={instructorCourses.length} icon="📘" />
                 <StatCard
                   title="Total Students"
-                  value={instructorCourses.reduce((s, c) => s + (c.students || 0), 0)}
+                  value={uniqueStudentsCount}
                   icon="👥"
                 />
                 <StatCard

@@ -191,8 +191,6 @@ export default function ManageCourse() {
     description: "",
     duration: "",
     image: "",
-    rating: 4.5,
-    students: 0,
     modules: [],
   });
 
@@ -239,8 +237,6 @@ export default function ManageCourse() {
       description: "",
       duration: "",
       image: "",
-      rating: 4.5,
-      students: 0,
       modules: [],
     });
     setEditingCourse(null);
@@ -262,8 +258,6 @@ export default function ManageCourse() {
       description: course.description || "",
       duration: course.duration || "",
       image: course.image || "",
-      rating: course.rating || 4.5,
-      students: course.students || 0,
       modules: modulesFromCurriculum,
     });
 
@@ -280,10 +274,7 @@ export default function ManageCourse() {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]:
-        name === "rating" || name === "students"
-          ? parseFloat(value) || 0
-          : value,
+      [name]: value,
     }));
   };
 
@@ -364,6 +355,39 @@ export default function ManageCourse() {
         return;
       }
 
+      // Validate that at least one module is required
+      if (!formData.modules || formData.modules.length === 0) {
+        showToast("❌ Please add at least one module to the course", "error");
+        setSubmitting(false);
+        return;
+      }
+
+      // Validate that each module has a title
+      const modulesWithoutTitle = formData.modules.filter(m => !m.title || m.title.trim() === "");
+      if (modulesWithoutTitle.length > 0) {
+        showToast("❌ All modules must have a title", "error");
+        setSubmitting(false);
+        return;
+      }
+
+      // Validate that each module has at least one lesson
+      const modulesWithoutLessons = formData.modules.filter(m => !m.lessons || m.lessons.length === 0);
+      if (modulesWithoutLessons.length > 0) {
+        showToast("❌ Each module must have at least one lesson", "error");
+        setSubmitting(false);
+        return;
+      }
+
+      // Validate that each lesson has a title
+      for (const module of formData.modules) {
+        const lessonsWithoutTitle = module.lessons.filter(l => !l.title || l.title.trim() === "");
+        if (lessonsWithoutTitle.length > 0) {
+          showToast("❌ All lessons must have a title", "error");
+          setSubmitting(false);
+          return;
+        }
+      }
+
       const curriculum = mapModulesToCurriculum(formData.modules);
       const courseData = {
         title: formData.title,
@@ -371,8 +395,6 @@ export default function ManageCourse() {
         category: formData.category,
         level: formData.level,
         duration: formData.duration,
-        rating: formData.rating || 0,
-        students: formData.students || 0,
         image: formData.image,
         curriculum: curriculum,
         learningPoints: [], // Can be added later if needed
@@ -609,7 +631,7 @@ export default function ManageCourse() {
                     <div className="flex items-center gap-1">
                       <IconStar className="text-yellow-400" />
                       <span className="font-semibold text-gray-900 dark:text-white">
-                        {course.rating}
+                        {course.rating ? course.rating.toFixed(1) : '0.0'}
                       </span>
                     </div>
                     <span className="text-gray-600 dark:text-gray-400">{course.duration}</span>
@@ -748,39 +770,6 @@ export default function ManageCourse() {
                   />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Rating
-                    </label>
-                    <input
-                      type="number"
-                      name="rating"
-                      value={formData.rating}
-                      onChange={handleInputChange}
-                      min="0"
-                      max="5"
-                      step="0.1"
-                      placeholder="4.5"
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500"
-                    />
-                  </div>
-
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-                      Students
-                    </label>
-                    <input
-                      type="number"
-                      name="students"
-                      value={formData.students}
-                      onChange={handleInputChange}
-                      min="0"
-                      placeholder="0"
-                      className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-900 dark:text-white rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-gray-400 dark:placeholder-gray-500"
-                    />
-                  </div>
-                </div>
 
                 <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -829,9 +818,10 @@ export default function ManageCourse() {
                   </div>
 
                   {formData.modules.length === 0 && (
-                    <p className="text-sm text-gray-500 dark:text-gray-400">
-                      No modules yet. Click &quot;Add Module&quot; to get started.
-                    </p>
+                    <div className="flex items-center gap-2 text-sm text-amber-600 dark:text-amber-400 bg-amber-50 dark:bg-amber-900/10 border border-amber-200 dark:border-amber-800/50 rounded-md px-3 py-2">
+                      <span>⚠️</span>
+                      <span>At least one module is required. Click &quot;Add Module&quot; to get started.</span>
+                    </div>
                   )}
 
                   <div className="space-y-4">

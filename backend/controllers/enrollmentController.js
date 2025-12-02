@@ -45,6 +45,10 @@ export const createEnrollment = async (req, res, next) => {
       completedLessons: Math.max(0, completedLessons),
     });
 
+    // Update course students count
+    const enrollmentCount = await Enrollment.countDocuments({ courseId });
+    await Course.findByIdAndUpdate(courseId, { students: enrollmentCount });
+
     const populatedEnrollment = await Enrollment.findById(enrollment._id)
       .populate('userId', 'name email')
       .populate('courseId', 'title description instructor category level duration image');
@@ -69,7 +73,10 @@ export const getMyEnrollments = async (req, res, next) => {
       .populate('courseId', 'title description instructor category level duration image rating students curriculum')
       .sort({ createdAt: -1 });
 
-    res.json(enrollments);
+    // Filter out enrollments where the course was deleted (courseId is null after population)
+    const validEnrollments = enrollments.filter(enrollment => enrollment.courseId !== null);
+
+    res.json(validEnrollments);
   } catch (error) {
     console.error('Get my enrollments error:', error);
     next(error);
@@ -100,7 +107,10 @@ export const getAllEnrollments = async (req, res, next) => {
       .populate('courseId', 'title description instructor category level duration image rating students')
       .sort({ createdAt: -1 });
 
-    res.json(enrollments);
+    // Filter out enrollments where the course was deleted (courseId is null after population)
+    const validEnrollments = enrollments.filter(enrollment => enrollment.courseId !== null);
+
+    res.json(validEnrollments);
   } catch (error) {
     console.error('Get all enrollments error:', error);
     next(error);
@@ -130,7 +140,10 @@ export const getEnrollmentsByStudent = async (req, res, next) => {
       .populate('courseId', 'title description instructor category level duration image rating students')
       .sort({ createdAt: -1 });
 
-    res.json(enrollments);
+    // Filter out enrollments where the course was deleted (courseId is null after population)
+    const validEnrollments = enrollments.filter(enrollment => enrollment.courseId !== null);
+
+    res.json(validEnrollments);
   } catch (error) {
     console.error('Get enrollments by student error:', error);
     next(error);
@@ -215,7 +228,13 @@ export const deleteEnrollment = async (req, res, next) => {
       }
     }
 
+    const courseId = enrollment.courseId;
+    
     await Enrollment.findByIdAndDelete(id);
+
+    // Update course students count
+    const enrollmentCount = await Enrollment.countDocuments({ courseId });
+    await Course.findByIdAndUpdate(courseId, { students: enrollmentCount });
 
     res.json({ message: 'Enrollment removed successfully' });
   } catch (error) {

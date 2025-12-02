@@ -89,14 +89,20 @@ function IconPlayCircle(props) {
 export default function CourseDetails({ course: courseProp, onBack }) {
   const { id: idParam } = useParams();
   const navigate = useNavigate();
-  const { user } = useAuth() || { user: null };
+  const authContext = useAuth();
+  const user = authContext?.user || null;
 
   const [course, setCourse] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [enrolling, setEnrolling] = useState(false);
   const [isEnrolled, setIsEnrolled] = useState(false);
+  const [enrollmentData, setEnrollmentData] = useState(null); // Store enrollment progress and completion
   const [showToast, setShowToast] = useState(false);
+  const [userReview, setUserReview] = useState(null);
+  const [rating, setRating] = useState(0);
+  const [hoveredRating, setHoveredRating] = useState(0);
+  const [submittingReview, setSubmittingReview] = useState(false);
   const [expandedModule, setExpandedModule] = useState(null);
 
   // Fetch course from API
@@ -117,30 +123,6 @@ export default function CourseDetails({ course: courseProp, onBack }) {
         );
 
         setCourse(response.data);
-
-        // Check if user is enrolled
-        if (user && user.role === "student") {
-          const token = localStorage.getItem("ctm_token");
-          if (token) {
-            try {
-              const enrollmentsResponse = await axios.get(
-                "http://localhost:5000/api/enrollments/me",
-                {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                }
-              );
-              const enrolled = enrollmentsResponse.data.some(
-                (e) => String(e.courseId._id || e.courseId) === String(response.data._id)
-              );
-              setIsEnrolled(enrolled);
-            } catch (err) {
-              // If enrollment check fails, assume not enrolled
-              setIsEnrolled(false);
-            }
-          }
-        }
       } catch (err) {
         if (err.response && err.response.data) {
           setError(err.response.data.message || "Failed to load course");
@@ -158,10 +140,76 @@ export default function CourseDetails({ course: courseProp, onBack }) {
     if (courseProp) {
       setCourse(courseProp);
       setLoading(false);
-    } else {
+      setError("");
+    } else if (idParam) {
       fetchCourse();
+    } else {
+      setError("Course ID is required");
+      setLoading(false);
+      setCourse(null);
     }
-  }, [idParam, courseProp, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [idParam, courseProp]);
+
+  // Check enrollment status when course is loaded
+  useEffect(() => {
+    // Only check enrollment if we have a course loaded
+    if (!course || !course._id) {
+      setIsEnrolled(false);
+      setEnrollmentData(null);
+      return;
+    }
+
+    // Only check if user is a student
+    if (!user || user.role !== "student") {
+      setIsEnrolled(false);
+      setEnrollmentData(null);
+      return;
+    }
+
+    const token = localStorage.getItem("ctm_token");
+    if (!token) {
+      setIsEnrolled(false);
+      setEnrollmentData(null);
+      return;
+    }
+
+    const checkEnrollment = async () => {
+      try {
+        const enrollmentsResponse = await axios.get(
+          "http://localhost:5000/api/enrollments/me",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const enrollment = (enrollmentsResponse.data || []).find(
+          (e) => {
+            const courseId = e.courseId?._id || e.courseId;
+            return courseId && String(courseId) === String(course._id);
+          }
+        );
+        if (enrollment) {
+          setIsEnrolled(true);
+          setEnrollmentData({
+            progress: enrollment.progress || 0,
+            completed: enrollment.completed || false,
+            enrollmentId: enrollment._id
+          });
+        } else {
+          setIsEnrolled(false);
+          setEnrollmentData(null);
+        }
+      } catch (err) {
+        console.error("Error fetching enrollment:", err);
+        setIsEnrolled(false);
+        setEnrollmentData(null);
+      }
+    };
+
+    checkEnrollment();
+  }, [course?._id, user?.role]);
 
   // Total lessons from curriculum topics
   const totalLessons = useMemo(
@@ -198,6 +246,11 @@ export default function CourseDetails({ course: courseProp, onBack }) {
       );
 
       setIsEnrolled(true);
+      setEnrollmentData({
+        progress: 0,
+        completed: false,
+        enrollmentId: null
+      });
       setShowToast(true);
       setTimeout(() => {
         navigate("/enrollments");
@@ -225,6 +278,88 @@ export default function CourseDetails({ course: courseProp, onBack }) {
       return () => clearTimeout(timer);
     }
   }, [showToast]);
+
+
+  // Fetch user's review if they're a student
+  useEffect(() => {
+    const fetchUserReview = async () => {
+      if (!course?._id || !user || user.role !== "student") {
+        setUserReview(null);
+        return;
+      }
+
+      try {
+        const token = localStorage.getItem("ctm_token");
+        if (!token) return;
+
+        const response = await axios.get(
+          `http://localhost:5000/api/reviews/user/${course._id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        setUserReview(response.data);
+        setRating(response.data.rating);
+      } catch (err) {
+        // User hasn't reviewed yet, that's okay
+        if (err.response?.status !== 404) {
+          console.error("Error fetching user review:", err);
+        }
+      }
+    };
+
+    fetchUserReview();
+  }, [course?._id, user]);
+
+  // Handle rating submission
+  const handleSubmitReview = async () => {
+    if (!course?._id || !user || user.role !== "student" || rating === 0) {
+      return;
+    }
+
+    try {
+      setSubmittingReview(true);
+      const token = localStorage.getItem("ctm_token");
+      
+      if (!token) {
+        setError("Please log in to submit a review");
+        setSubmittingReview(false);
+        return;
+      }
+
+      const response = await axios.post(
+        "http://localhost:5000/api/reviews",
+        {
+          courseId: course._id,
+          rating,
+          comment: "",
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      setUserReview(response.data);
+      
+      // Refresh course to get updated rating
+      const courseResponse = await axios.get(`http://localhost:5000/api/courses/${course._id}`);
+      const updatedCourse = courseResponse.data;
+      setCourse(updatedCourse);
+      
+      // Log for debugging - verify rating update
+      console.log('Course rating updated:', updatedCourse.rating);
+      
+      setShowToast(true);
+    } catch (err) {
+      if (err.response?.data?.message) {
+        setError(err.response.data.message);
+      } else {
+        setError("Failed to submit review. Please try again.");
+      }
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
 
   // Loading state
   if (loading) {
@@ -274,13 +409,33 @@ export default function CourseDetails({ course: courseProp, onBack }) {
     );
   }
 
-  // Resolve instructor information
-  const instructorName = typeof course.instructor === "string" 
-    ? course.instructor 
-    : course.instructor?.name || course.createdBy?.name || "Instructor";
+  // Resolve instructor information (with safety checks)
+  const instructorName = course?.instructor 
+    ? (typeof course.instructor === "string" 
+        ? course.instructor 
+        : course.instructor?.name || course.createdBy?.name || "Instructor")
+    : course?.createdBy?.name || "Instructor";
   
-  const instructorAvatar = course.instructor?.photo || course.instructor?.avatar || 
-    course.createdBy?.avatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(instructorName) + "&background=6366f1&color=fff";
+  const instructorAvatar = course?.instructor?.photo || course?.instructor?.avatar || 
+    course?.createdBy?.avatar || "https://ui-avatars.com/api/?name=" + encodeURIComponent(instructorName) + "&background=6366f1&color=fff";
+
+  // Safety check - if course is still null at this point, show error
+  if (!course) {
+    return (
+      <div className="min-h-screen bg-white dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="text-5xl mb-3">📚</div>
+          <p className="text-gray-500 dark:text-gray-400 text-lg mb-4">Course not found</p>
+          <Link
+            to="/courses"
+            className="inline-flex items-center justify-center rounded-xl bg-black dark:bg-white dark:text-black text-white px-4 py-2 hover:bg-black/90 dark:hover:bg-gray-200 transition-colors"
+          >
+            Back to Courses
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-white dark:bg-gray-900">
@@ -321,7 +476,9 @@ export default function CourseDetails({ course: courseProp, onBack }) {
             <div className="flex flex-wrap items-center gap-6 text-sm text-gray-600 dark:text-gray-400">
               <div className="flex items-center gap-1">
                 <IconStar className="text-yellow-400" />
-                <span className="font-semibold text-gray-900 dark:text-white">{course.rating || 0}</span>
+                <span className="font-semibold text-gray-900 dark:text-white">
+                  {course.rating ? course.rating.toFixed(1) : '0.0'}
+                </span>
                 <span>rating</span>
               </div>
               <div className="flex items-center gap-1">
@@ -429,6 +586,57 @@ export default function CourseDetails({ course: courseProp, onBack }) {
                 </div>
               </div>
             </div>
+
+            {/* Rate This Course - Only for enrolled students */}
+            {isEnrolled && user?.role === "student" && (
+              <div className="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                  {userReview ? "Your Rating" : "Rate This Course"}
+                </h2>
+                
+                {/* Star Rating */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+                    Rating
+                  </label>
+                  <div className="flex items-center gap-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setRating(star)}
+                        onMouseEnter={() => setHoveredRating(star)}
+                        onMouseLeave={() => setHoveredRating(0)}
+                        className="focus:outline-none transition-transform hover:scale-110"
+                        disabled={submittingReview}
+                      >
+                        <IconStar
+                          className={`w-8 h-8 ${
+                            star <= (hoveredRating || rating)
+                              ? "text-yellow-400 fill-current"
+                              : "text-gray-300 dark:text-gray-600"
+                          }`}
+                        />
+                      </button>
+                    ))}
+                    {rating > 0 && (
+                      <span className="ml-2 text-sm text-gray-600 dark:text-gray-400">
+                        {rating} out of 5
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  onClick={handleSubmitReview}
+                  disabled={rating === 0 || submittingReview}
+                  className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white font-medium rounded-lg transition-colors"
+                >
+                  {submittingReview ? "Submitting..." : userReview ? "Update Rating" : "Submit Rating"}
+                </button>
+              </div>
+            )}
           </div>
 
           {/* RIGHT — Info only */}
@@ -447,6 +655,13 @@ export default function CourseDetails({ course: courseProp, onBack }) {
               )}
               <div className="p-6 space-y-4">
                 <div className="space-y-3 text-sm">
+                  <div className="flex justify-between items-center">
+                    <span className="text-gray-600 dark:text-gray-400">Rating</span>
+                    <span className="font-semibold text-gray-900 dark:text-white flex items-center gap-1">
+                      <IconStar className="text-yellow-400 w-4 h-4" />
+                      {course.rating ? course.rating.toFixed(1) : '0.0'}
+                    </span>
+                  </div>
                   <div className="flex justify-between">
                     <span className="text-gray-600 dark:text-gray-400">Duration</span>
                     <span className="font-semibold text-gray-900 dark:text-white">{course.duration}</span>
@@ -465,6 +680,37 @@ export default function CourseDetails({ course: courseProp, onBack }) {
                   </div>
                 </div>
 
+                {/* Progress Bar - Show only if enrolled */}
+                {isEnrolled && enrollmentData && (
+                  <div className="border-t border-gray-200 dark:border-gray-700 pt-4 mt-4">
+                    <div className="flex items-center justify-between mb-2">
+                      <span className="text-sm font-medium text-gray-900 dark:text-white">Your Progress</span>
+                      {enrollmentData.completed && (
+                        <span className="text-xs text-green-600 dark:text-green-400 font-medium flex items-center gap-1">
+                          <IconCheckCircle className="w-4 h-4" />
+                          Completed
+                        </span>
+                      )}
+                    </div>
+                    <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-3 mb-2">
+                      <div
+                        className={`h-3 rounded-full transition-all duration-300 ${
+                          enrollmentData.completed 
+                            ? 'bg-green-500 dark:bg-green-600' 
+                            : 'bg-indigo-600 dark:bg-indigo-500'
+                        }`}
+                        style={{ width: `${enrollmentData.completed ? 100 : Math.max(0, Math.min(100, enrollmentData.progress))}%` }}
+                      />
+                    </div>
+                    <div className="flex items-center justify-between text-xs text-gray-600 dark:text-gray-400">
+                      <span>{enrollmentData.completed ? '100%' : `${Math.round(enrollmentData.progress)}%`} Complete</span>
+                      {!enrollmentData.completed && (
+                        <span className="text-gray-500 dark:text-gray-500">In Progress</span>
+                      )}
+                    </div>
+                  </div>
+                )}
+
                 {/* Enrollment button for students */}
                 {canEnroll ? (
                   <>
@@ -472,10 +718,14 @@ export default function CourseDetails({ course: courseProp, onBack }) {
                       <>
                         <button
                           disabled
-                          className="w-full inline-flex justify-center items-center gap-2 px-6 py-3 bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 rounded-lg font-semibold cursor-not-allowed border border-green-300 dark:border-green-700"
+                          className={`w-full inline-flex justify-center items-center gap-2 px-6 py-3 rounded-lg font-semibold cursor-not-allowed border ${
+                            enrollmentData?.completed
+                              ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-400 border-green-300 dark:border-green-700'
+                              : 'bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 border-blue-300 dark:border-blue-700'
+                          }`}
                         >
-                          <span>✅</span>
-                          Already Enrolled
+                          <span>{enrollmentData?.completed ? '✅' : '📚'}</span>
+                          {enrollmentData?.completed ? 'Course Completed' : 'Already Enrolled'}
                         </button>
                         {/* START LEARNING BUTTON */}
                         {course.curriculum && course.curriculum[0]?.topics && course.curriculum[0].topics[0] ? (

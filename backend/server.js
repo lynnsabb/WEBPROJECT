@@ -6,6 +6,7 @@ import connectDB from './config/db.js';
 import authRoutes from './routes/authRoutes.js';
 import courseRoutes from './routes/courseRoutes.js';
 import enrollmentRoutes from './routes/enrollmentRoutes.js';
+import reviewRoutes from './routes/reviewRoutes.js';
 import testRoutes from './routes/testRoutes.js';
 
 // Load environment variables
@@ -31,6 +32,7 @@ app.get('/api/health', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/courses', courseRoutes);
 app.use('/api/enrollments', enrollmentRoutes);
+app.use('/api/reviews', reviewRoutes);
 app.use('/api/test', testRoutes);
 
 // Error handling middleware

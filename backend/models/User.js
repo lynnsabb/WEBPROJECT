@@ -54,8 +54,8 @@ const userSchema = new mongoose.Schema(
   }
 );
 
-// Index for faster email lookups
-userSchema.index({ email: 1 });
+// Note: Email index is automatically created by unique: true option above
+// No need for explicit index() call as it creates a duplicate
 
 // Ensure email is unique with better error message
 userSchema.post('save', function(error, doc, next) {

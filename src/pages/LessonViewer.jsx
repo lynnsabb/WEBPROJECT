@@ -1,5 +1,5 @@
 // src/pages/LessonViewer.jsx
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -285,17 +285,47 @@ export default function LessonViewer() {
 
     const [course, setCourse] = useState(null);
     const [completedLessons, setCompletedLessons] = useState([]);
+    const [enrollment, setEnrollment] = useState(null);
     const [sidebarOpen, setSidebarOpen] = useState(true);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
 
+    // Fetch course and enrollment data
     useEffect(() => {
-        const fetchCourse = async () => {
+        const fetchData = async () => {
             try {
                 setLoading(true);
                 setError("");
-                const response = await axios.get(`http://localhost:5000/api/courses/${courseId}`);
-                setCourse(response.data);
+                
+                // Fetch course
+                const courseResponse = await axios.get(`http://localhost:5000/api/courses/${courseId}`);
+                setCourse(courseResponse.data);
+
+                // Fetch enrollment to get progress
+                const token = localStorage.getItem("ctm_token");
+                if (token) {
+                    try {
+                        const enrollmentsResponse = await axios.get(
+                            "http://localhost:5000/api/enrollments/me",
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            }
+                        );
+                        const userEnrollment = enrollmentsResponse.data.find(
+                            (e) => String(e.courseId?._id || e.courseId) === String(courseId)
+                        );
+                        if (userEnrollment) {
+                            setEnrollment(userEnrollment);
+                            // Load completed lessons from enrollment if stored
+                            // For now, we'll calculate from progress percentage
+                        }
+                    } catch (err) {
+                        console.error("Error fetching enrollment:", err);
+                        // Continue without enrollment data
+                    }
+                }
             } catch (err) {
                 console.error("Error fetching course:", err);
                 setError("Failed to load course. Please try again.");
@@ -305,9 +335,44 @@ export default function LessonViewer() {
         };
 
         if (courseId) {
-            fetchCourse();
+            fetchData();
         }
     }, [courseId]);
+
+    // Flatten all lessons from curriculum using useMemo
+    // MUST be called before any conditional returns (Rules of Hooks)
+    const allLessons = useMemo(() => {
+        if (!course || !course.curriculum) return [];
+        return course.curriculum.flatMap((module, moduleIndex) =>
+            (module.topics || []).map((topic, topicIndex) => ({
+                ...topic,
+                id: topic.id || `${moduleIndex}-${topicIndex}`, // Use topic.id or generate one
+                moduleId: module.id || moduleIndex,
+                moduleTitle: module.title,
+                videoUrl: topic.videoUrl || topic.video_url || '', // Ensure videoUrl is included
+                content: topic.content || topic.description || ''
+            }))
+        );
+    }, [course?.curriculum]);
+
+    // Initialize completed lessons from enrollment when course loads
+    // MUST be called before any conditional returns (Rules of Hooks)
+    useEffect(() => {
+        // Only initialize if we haven't already set completed lessons
+        if (course?._id && enrollment?._id && allLessons.length > 0 && completedLessons.length === 0) {
+            // If enrollment has progress, estimate which lessons are completed
+            // This is a fallback - ideally we'd store completed lesson IDs in the backend
+            if (enrollment.progress > 0) {
+                const estimatedCompleted = Math.round((enrollment.progress / 100) * allLessons.length);
+                if (estimatedCompleted > 0 && estimatedCompleted <= allLessons.length) {
+                    // Initialize with estimated completed lessons (first N lessons)
+                    const initialCompleted = allLessons.slice(0, estimatedCompleted).map(l => l.id);
+                    setCompletedLessons(initialCompleted);
+                }
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [course?._id, enrollment?._id, allLessons.length]);
 
     if (loading) {
         return (
@@ -333,16 +398,6 @@ export default function LessonViewer() {
         );
     }
 
-    // Flatten all lessons from curriculum
-    const allLessons = (course.curriculum || []).flatMap((module, moduleIndex) =>
-        (module.topics || []).map((topic, topicIndex) => ({
-            ...topic,
-            id: topic.id || `${moduleIndex}-${topicIndex}`, // Use topic.id or generate one
-            moduleId: module.id || moduleIndex,
-            moduleTitle: module.title
-        }))
-    );
-
     if (allLessons.length === 0) {
         return (
             <div className="min-h-screen bg-gray-900 text-white flex items-center justify-center">
@@ -358,9 +413,40 @@ export default function LessonViewer() {
     const prevLesson = currentLessonIndex > 0 ? allLessons[currentLessonIndex - 1] : null;
     const nextLesson = currentLessonIndex < allLessons.length - 1 ? allLessons[currentLessonIndex + 1] : null;
 
-    const handleMarkComplete = () => {
+    const handleMarkComplete = async () => {
         if (!completedLessons.includes(currentLesson.id)) {
-            setCompletedLessons([...completedLessons, currentLesson.id]);
+            const updatedCompleted = [...completedLessons, currentLesson.id];
+            setCompletedLessons(updatedCompleted);
+            
+            // Calculate new progress
+            const newProgress = Math.round((updatedCompleted.length / allLessons.length) * 100);
+            const isCompleted = updatedCompleted.length === allLessons.length;
+            
+            // Save to backend if enrollment exists
+            if (enrollment && enrollment._id) {
+                const token = localStorage.getItem("ctm_token");
+                if (token) {
+                    try {
+                        await axios.put(
+                            `http://localhost:5000/api/enrollments/${enrollment._id}`,
+                            {
+                                progress: newProgress,
+                                completed: isCompleted,
+                                completedLessons: updatedCompleted.length
+                            },
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            }
+                        );
+                    } catch (err) {
+                        console.error("Error updating enrollment progress:", err);
+                        // Revert on error
+                        setCompletedLessons(completedLessons);
+                    }
+                }
+            }
         }
     };
 
@@ -372,7 +458,10 @@ export default function LessonViewer() {
         navigate(`/courses/${courseId}/learn/${lesson.id || lesson._id}`);
     };
 
-    const progressPercentage = (completedLessons.length / allLessons.length) * 100;
+    // Calculate progress from completed lessons
+    const progressPercentage = allLessons.length > 0 
+        ? Math.round((completedLessons.length / allLessons.length) * 100)
+        : 0;
 
     return (
         <div className="min-h-screen bg-gray-900 text-white flex">
@@ -465,10 +554,85 @@ export default function LessonViewer() {
                         <>
                             {/* Video Player */}
                             {currentLesson.videoUrl ? (
-                                <VideoPlayer
-                                    videoUrl={currentLesson.videoUrl}
-                                    onVideoEnd={handleVideoEnd}
-                                />
+                                (() => {
+                                    const videoUrl = currentLesson.videoUrl.trim();
+                                    
+                                    // Check if it's a YouTube URL
+                                    if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+                                        // Extract YouTube video ID
+                                        let videoId = '';
+                                        if (videoUrl.includes('youtube.com/watch?v=')) {
+                                            videoId = videoUrl.split('v=')[1]?.split('&')[0];
+                                        } else if (videoUrl.includes('youtu.be/')) {
+                                            videoId = videoUrl.split('youtu.be/')[1]?.split('?')[0];
+                                        } else if (videoUrl.includes('youtube.com/embed/')) {
+                                            videoId = videoUrl.split('embed/')[1]?.split('?')[0];
+                                        }
+                                        
+                                        if (videoId) {
+                                            return (
+                                                <div className="bg-black rounded-lg overflow-hidden shadow-2xl aspect-video">
+                                                    <iframe
+                                                        src={`https://www.youtube.com/embed/${videoId}?rel=0`}
+                                                        className="w-full h-full"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowFullScreen
+                                                        title={currentLesson.title}
+                                                    />
+                                                </div>
+                                            );
+                                        }
+                                    }
+                                    
+                                    // Check if it's a Vimeo URL
+                                    if (videoUrl.includes('vimeo.com')) {
+                                        let videoId = '';
+                                        if (videoUrl.includes('vimeo.com/')) {
+                                            videoId = videoUrl.split('vimeo.com/')[1]?.split('?')[0];
+                                        }
+                                        
+                                        if (videoId) {
+                                            return (
+                                                <div className="bg-black rounded-lg overflow-hidden shadow-2xl aspect-video">
+                                                    <iframe
+                                                        src={`https://player.vimeo.com/video/${videoId}`}
+                                                        className="w-full h-full"
+                                                        allow="autoplay; fullscreen; picture-in-picture"
+                                                        allowFullScreen
+                                                        title={currentLesson.title}
+                                                    />
+                                                </div>
+                                            );
+                                        }
+                                    }
+                                    
+                                    // Check if it's already an embed URL (iframe src)
+                                    if (videoUrl.includes('<iframe') || videoUrl.includes('embed')) {
+                                        // If it's an iframe tag, extract the src
+                                        const iframeMatch = videoUrl.match(/src=["']([^"']+)["']/);
+                                        if (iframeMatch && iframeMatch[1]) {
+                                            return (
+                                                <div className="bg-black rounded-lg overflow-hidden shadow-2xl aspect-video">
+                                                    <iframe
+                                                        src={iframeMatch[1]}
+                                                        className="w-full h-full"
+                                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                        allowFullScreen
+                                                        title={currentLesson.title}
+                                                    />
+                                                </div>
+                                            );
+                                        }
+                                    }
+                                    
+                                    // For direct video URLs (mp4, webm, etc.) or other formats
+                                    return (
+                                        <VideoPlayer
+                                            videoUrl={videoUrl}
+                                            onVideoEnd={handleVideoEnd}
+                                        />
+                                    );
+                                })()
                             ) : (
                                 <div className="bg-gray-800 rounded-lg p-12 text-center">
                                     <p className="text-gray-400">No video available for this lesson</p>
