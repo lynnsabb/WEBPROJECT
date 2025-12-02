@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../state/auth.jsx";
+import API_BASE_URL from "../config/api.js";
 
 export default function Profile() {
   const { user } = useAuth();
@@ -33,7 +34,7 @@ export default function Profile() {
         if (user.role === "student") {
           try {
             const enrollmentsResponse = await axios.get(
-              "http://localhost:5000/api/enrollments/me",
+              `${API_BASE_URL}/enrollments/me`,
               {
                 headers: {
                   Authorization: `Bearer ${token}`,
@@ -50,7 +51,7 @@ export default function Profile() {
         // Fetch instructor's courses
         if (user.role === "instructor") {
           try {
-            const coursesResponse = await axios.get("http://localhost:5000/api/courses", {
+            const coursesResponse = await axios.get(`${API_BASE_URL}/courses`, {
               headers: {
                 Authorization: `Bearer ${token}`,
               },
@@ -64,7 +65,7 @@ export default function Profile() {
             // Fetch unique student count across all instructor's courses
             try {
               const studentsResponse = await axios.get(
-                `http://localhost:5000/api/courses/instructor/${user._id}/students`
+                `${API_BASE_URL}/courses/instructor/${user._id}/students`
               );
               const uniqueCount = studentsResponse.data.uniqueStudents || 0;
               console.log('Unique students count from API:', uniqueCount);

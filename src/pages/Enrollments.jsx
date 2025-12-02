@@ -2,6 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../state/auth.jsx";
+import API_BASE_URL from "../config/api.js";
 
 function IconCheckCircle(props) {
   return (
@@ -52,7 +53,7 @@ export default function Enrollments() {
       }
 
       const response = await axios.get(
-        "http://localhost:5000/api/enrollments/me",
+        `${API_BASE_URL}/enrollments/me`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

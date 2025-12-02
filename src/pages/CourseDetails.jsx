@@ -4,6 +4,7 @@ import { useState, useMemo, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../state/auth.jsx";
+import API_BASE_URL from "../config/api.js";
 
 // Icons
 function IconArrowLeft(props) {
@@ -119,7 +120,7 @@ export default function CourseDetails({ course: courseProp, onBack }) {
         }
 
         const response = await axios.get(
-          `http://localhost:5000/api/courses/${idParam}`
+          `${API_BASE_URL}/courses/${idParam}`
         );
 
         setCourse(response.data);
@@ -177,7 +178,7 @@ export default function CourseDetails({ course: courseProp, onBack }) {
     const checkEnrollment = async () => {
       try {
         const enrollmentsResponse = await axios.get(
-          "http://localhost:5000/api/enrollments/me",
+          `${API_BASE_URL}/enrollments/me`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -236,7 +237,7 @@ export default function CourseDetails({ course: courseProp, onBack }) {
       }
 
       await axios.post(
-        "http://localhost:5000/api/enrollments",
+        `${API_BASE_URL}/enrollments`,
         { courseId: course._id },
         {
           headers: {
@@ -293,7 +294,7 @@ export default function CourseDetails({ course: courseProp, onBack }) {
         if (!token) return;
 
         const response = await axios.get(
-          `http://localhost:5000/api/reviews/user/${course._id}`,
+          `${API_BASE_URL}/reviews/user/${course._id}`,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
@@ -328,7 +329,7 @@ export default function CourseDetails({ course: courseProp, onBack }) {
       }
 
       const response = await axios.post(
-        "http://localhost:5000/api/reviews",
+        `${API_BASE_URL}/reviews`,
         {
           courseId: course._id,
           rating,
@@ -342,7 +343,7 @@ export default function CourseDetails({ course: courseProp, onBack }) {
       setUserReview(response.data);
       
       // Refresh course to get updated rating
-      const courseResponse = await axios.get(`http://localhost:5000/api/courses/${course._id}`);
+      const courseResponse = await axios.get(`${API_BASE_URL}/courses/${course._id}`);
       const updatedCourse = courseResponse.data;
       setCourse(updatedCourse);
       

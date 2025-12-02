@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
+import API_BASE_URL from "../config/api.js";
 
 // === Inline SVG icons ===
 function IconSearch(props) {
@@ -62,7 +63,7 @@ export default function CourseCatalog() {
         setLoading(true);
         setError("");
         
-        const response = await axios.get("http://localhost:5000/api/courses");
+        const response = await axios.get(`${API_BASE_URL}/courses`);
         setCourses(response.data || []);
       } catch (err) {
         if (err.response && err.response.data) {

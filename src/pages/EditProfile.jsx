@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { useAuth } from "../state/auth.jsx";
+import API_BASE_URL from "../config/api.js";
 
 export default function EditProfile() {
   const navigate = useNavigate();
@@ -65,7 +66,7 @@ export default function EditProfile() {
       }
 
       const response = await axios.put(
-        "http://localhost:5000/api/auth/update-profile",
+        `${API_BASE_URL}/auth/update-profile`,
         {
           name: form.name.trim(),
           email: form.email.trim(),

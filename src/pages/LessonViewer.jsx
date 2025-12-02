@@ -2,6 +2,7 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_BASE_URL from "../config/api.js";
 
 // Icons
 function IconPlay(props) {
@@ -298,7 +299,7 @@ export default function LessonViewer() {
                 setError("");
                 
                 // Fetch course
-                const courseResponse = await axios.get(`http://localhost:5000/api/courses/${courseId}`);
+                const courseResponse = await axios.get(`${API_BASE_URL}/courses/${courseId}`);
                 setCourse(courseResponse.data);
 
                 // Fetch enrollment to get progress
@@ -306,7 +307,7 @@ export default function LessonViewer() {
                 if (token) {
                     try {
                         const enrollmentsResponse = await axios.get(
-                            "http://localhost:5000/api/enrollments/me",
+                            `${API_BASE_URL}/enrollments/me`,
                             {
                                 headers: {
                                     Authorization: `Bearer ${token}`,
@@ -428,7 +429,7 @@ export default function LessonViewer() {
                 if (token) {
                     try {
                         await axios.put(
-                            `http://localhost:5000/api/enrollments/${enrollment._id}`,
+                            `${API_BASE_URL}/enrollments/${enrollment._id}`,
                             {
                                 progress: newProgress,
                                 completed: isCompleted,

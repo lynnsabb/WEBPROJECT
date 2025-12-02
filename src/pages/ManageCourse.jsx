@@ -1,6 +1,7 @@
 import { useState, useMemo, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "../state/auth.jsx";
+import API_BASE_URL from "../config/api.js";
 
 // Icon components
 function IconPlus(props) {
@@ -153,7 +154,7 @@ export default function ManageCourse() {
         }
 
         // Fetch all courses, then filter to only instructor's courses
-        const response = await axios.get("http://localhost:5000/api/courses", {
+        const response = await axios.get(`${API_BASE_URL}/courses`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -403,7 +404,7 @@ export default function ManageCourse() {
       if (editingCourse) {
         // Update existing course
         const response = await axios.put(
-          `http://localhost:5000/api/courses/${editingCourse._id}`,
+          `${API_BASE_URL}/courses/${editingCourse._id}`,
           courseData,
           {
             headers: {
@@ -419,7 +420,7 @@ export default function ManageCourse() {
       } else {
         // Create new course
         const response = await axios.post(
-          "http://localhost:5000/api/courses",
+          `${API_BASE_URL}/courses`,
           courseData,
           {
             headers: {
@@ -468,7 +469,7 @@ export default function ManageCourse() {
       }
 
       await axios.delete(
-        `http://localhost:5000/api/courses/${courseToDelete._id}`,
+        `${API_BASE_URL}/courses/${courseToDelete._id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
