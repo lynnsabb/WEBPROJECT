@@ -1,53 +1,50 @@
-# Course Training Management (CTM) System
+# Course Tutorial Management (CTM) System
 
 **CSC443 – Fall 2025 | Project Part 2: Full-Stack Application Integration**
 
-**Due Date:** November 25, 2025
 
 ---
 
 ## Team Members
 
-- **Farah**
-- **Adam**
-- **Micheal**
-- **Lynn**
+- **Farah Mazeh**
+- **Adam Sahili**
+- **Micheal Geha**
+- **Lynn Sabbagh**
 
 ---
 
-## Project Overview
+# Project Overview
 
-### Topic
-**Course Training Management System** - An online learning platform that enables instructors to create and manage courses, and students to enroll, learn, and track their progress.
+## Topic  
+The Course Tutorial Management (CTM) System is a full-stack web application that allows instructors to create and manage online courses while enabling students to enroll, complete lessons, track their progress, and submit course reviews.
 
-### Primary Data Entities
+## Primary Data Entities  
+1. **Users**  
+   - Students: browse courses, enroll, track progress, submit reviews  
+   - Instructors: create, edit, and manage course content  
 
-1. **Users** - System users with two roles:
-   - **Students**: Can enroll in courses, track progress, and submit reviews
-   - **Instructors**: Can create, update, and delete courses
+2. **Courses**  
+   - Title, description, category, level, duration, rating  
+   - Curriculum (modules and topics)  
+   - Learning objectives  
+   - Video content (YouTube, Vimeo, direct video URLs)
 
-2. **Courses** - Educational content containing:
-   - Course metadata (title, description, category, level, duration, rating)
-   - Curriculum organized into modules and topics
-   - Learning points and course materials
-   - Video content (supports YouTube, Vimeo, and direct video URLs)
+3. **Enrollments**  
+   - Tracks student-course relationships  
+   - Progress (0–100%)  
+   - Completed lessons  
+   - Completion status  
 
-3. **Enrollments** - Student-course relationships tracking:
-   - Enrollment status and progress (0-100%)
-   - Completion status
-   - Number of completed lessons
-
-4. **Reviews** - Student feedback on courses:
-   - Rating (1-5 stars)
-   - Comment/feedback text
+4. **Reviews**  
+   - Rating (1–5 stars)  
+   - Optional comment  
 
 ---
-
 ## Deployed Application Links
 
 ### Frontend
-🔗 **Live Frontend Application:** [Add your deployed frontend URL here]
-- Deployed on: Vercel/Netlify (specify your platform)
+🔗 **Live Frontend Application:** https://webproject-blush-chi.vercel.app/
 
 ### Backend API
 🔗 **Live Backend API:** [Add your deployed backend URL here]
@@ -58,7 +55,7 @@
 
 ## GitHub Repository
 
-🔗 **Repository Link:** [Add your GitHub repository URL here]
+🔗 **Repository Link:** https://github.com/lynnsabb/WEBPROJECT
 
 ---
 
@@ -94,7 +91,7 @@
 ### Step 1: Clone the Repository
 
 ```bash
-git clone [your-repository-url]
+git clone (https://github.com/lynnsabb/WEBPROJECT)
 cd WEBPROJECT
 ```
 
@@ -117,31 +114,13 @@ touch .env  # On Windows: type nul > .env
 ```
 
 4. Add the following environment variables to `.env`:
-```env
-MONGO_URI="mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/ctm?retryWrites=true&w=majority&appName=Cluster0"
+
+MONGO_URI="mongodb+srv://Webaholic:farhat123@cluster0.egsdcdf.mongodb.net/ctm?retryWrites=true&w=majority&appName=Cluster0"
 PORT=5000
-JWT_SECRET=your-super-secret-jwt-key-change-this-in-production
-NODE_ENV=development
-```
+JWT_SECRET=supersecret123
 
-**Important:** 
-- Replace `username`, `password`, and the cluster URL with your MongoDB Atlas credentials
-- Use a strong, random string for `JWT_SECRET` in production
-
-5. (Optional) Seed the database with initial data:
+5. Start the backend server:
 ```bash
-# Seed all data (users, courses, enrollments)
-npm run seed:all
-
-# Or seed individually:
-npm run seed:users      # Seed users only
-npm run seed:courses    # Seed courses only
-npm run seed:enrollments # Seed enrollments only
-```
-
-6. Start the backend server:
-```bash
-# Development mode (with auto-reload)
 npm run dev
 
 # Production mode
@@ -152,38 +131,15 @@ The backend server will run on `http://localhost:5000`
 
 ### Step 3: Frontend Setup
 
-1. Navigate to the project root (or frontend directory if separate):
-```bash
-# From project root
-cd ..
-```
-
-2. Install dependencies:
+1. Install dependencies:
 ```bash
 npm install
 ```
 
-3. (Optional) Create a `.env` file in the root directory for frontend environment variables:
-```env
-VITE_API_BASE_URL=http://localhost:5000/api
-```
-
-4. Start the development server:
+2. Start the development server:
 ```bash
 npm run dev
 ```
-
-The frontend will run on `http://localhost:5173` (or the port shown in terminal)
-
-### Step 4: Verify Installation
-
-1. **Backend Health Check:**
-   - Open browser: `http://localhost:5000/api/health`
-   - Should return: `{ "status": "ok" }`
-
-2. **Frontend:**
-   - Open browser: `http://localhost:5173`
-   - You should see the CTM homepage
 
 ### Running the Full Stack Locally
 
@@ -208,14 +164,6 @@ npm run dev
 - **Local:** `http://localhost:5000/api`
 - **Production:** `[Your deployed backend URL]/api`
 
-### Authentication
-
-Most endpoints require authentication via JWT token. Include the token in the request header:
-```
-Authorization: Bearer <your-jwt-token>
-```
-
----
 
 ### Authentication Endpoints
 
@@ -232,20 +180,6 @@ Authorization: Bearer <your-jwt-token>
   "role": "student"  // or "instructor"
 }
 ```
-- **Response (201):**
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "_id": "507f1f77bcf86cd799439011",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "role": "student",
-    "createdAt": "2025-11-20T10:00:00.000Z",
-    "updatedAt": "2025-11-20T10:00:00.000Z"
-  }
-}
-```
 
 #### 2. Login User
 - **Endpoint:** `POST /api/auth/login`
@@ -256,18 +190,6 @@ Authorization: Bearer <your-jwt-token>
 {
   "email": "john@example.com",
   "password": "password123"
-}
-```
-- **Response (200):**
-```json
-{
-  "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-  "user": {
-    "_id": "507f1f77bcf86cd799439011",
-    "name": "John Doe",
-    "email": "john@example.com",
-    "role": "student"
-  }
 }
 ```
 
@@ -298,16 +220,6 @@ Authorization: Bearer <your-jwt-token>
   "email": "johnsmith@example.com"
 }
 ```
-- **Response (200):**
-```json
-{
-  "_id": "507f1f77bcf86cd799439011",
-  "name": "John Smith",
-  "email": "johnsmith@example.com",
-  "role": "student",
-  "updatedAt": "2025-11-20T11:00:00.000Z"
-}
-```
 
 #### 5. Change Password
 - **Endpoint:** `PUT /api/auth/change-password`
@@ -320,14 +232,7 @@ Authorization: Bearer <your-jwt-token>
   "newPassword": "newpassword123"
 }
 ```
-- **Response (200):**
-```json
-{
-  "message": "Password updated successfully"
-}
-```
 
----
 
 ### Course Endpoints
 
@@ -335,28 +240,6 @@ Authorization: Bearer <your-jwt-token>
 - **Endpoint:** `GET /api/courses`
 - **Access:** Public
 - **Description:** Retrieve all available courses
-- **Response (200):**
-```json
-[
-  {
-    "_id": "507f1f77bcf86cd799439011",
-    "title": "Python for Beginners",
-    "description": "Start your programming journey with Python...",
-    "instructor": "Emma Thompson",
-    "category": "Programming",
-    "level": "Beginner",
-    "duration": "20h",
-    "rating": 4.6,
-    "students": 3421,
-    "image": "https://example.com/image.jpg",
-    "curriculum": [...],
-    "learningPoints": [...],
-    "createdBy": "507f1f77bcf86cd799439012",
-    "createdAt": "2025-11-20T10:00:00.000Z",
-    "updatedAt": "2025-11-20T10:00:00.000Z"
-  }
-]
-```
 
 #### 2. Get Course by ID
 - **Endpoint:** `GET /api/courses/:id`
@@ -364,44 +247,7 @@ Authorization: Bearer <your-jwt-token>
 - **Description:** Retrieve a single course by ID
 - **URL Parameters:**
   - `id` - Course MongoDB ObjectId
-- **Response (200):**
-```json
-{
-  "_id": "507f1f77bcf86cd799439011",
-  "title": "Python for Beginners",
-  "description": "Start your programming journey with Python...",
-  "instructor": "Emma Thompson",
-  "category": "Programming",
-  "level": "Beginner",
-  "duration": "20h",
-  "rating": 4.6,
-  "students": 3421,
-  "image": "https://example.com/image.jpg",
-  "curriculum": [
-    {
-      "id": 1,
-      "title": "Getting Started with Python",
-      "description": "Introduction to Python programming",
-      "topics": [
-        {
-          "id": 1,
-          "title": "What is Python?",
-          "duration": "8m",
-          "videoUrl": "https://example.com/video.mp4",
-          "content": "Learn about Python..."
-        }
-      ]
-    }
-  ],
-  "learningPoints": [
-    "Master Python syntax",
-    "Build real-world projects"
-  ],
-  "createdBy": "507f1f77bcf86cd799439012",
-  "createdAt": "2025-11-20T10:00:00.000Z",
-  "updatedAt": "2025-11-20T10:00:00.000Z"
-}
-```
+
 
 #### 3. Create Course
 - **Endpoint:** `POST /api/courses`
@@ -439,18 +285,7 @@ Authorization: Bearer <your-jwt-token>
   ]
 }
 ```
-- **Response (201):**
-```json
-{
-  "_id": "507f1f77bcf86cd799439013",
-  "title": "Advanced JavaScript",
-  "description": "Master advanced JavaScript concepts...",
-  "createdBy": "507f1f77bcf86cd799439012",
-  "createdAt": "2025-11-20T10:00:00.000Z",
-  "updatedAt": "2025-11-20T10:00:00.000Z",
-  ...
-}
-```
+
 
 #### 4. Update Course
 - **Endpoint:** `PUT /api/courses/:id`
@@ -466,17 +301,7 @@ Authorization: Bearer <your-jwt-token>
   "rating": 4.8
 }
 ```
-- **Response (200):**
-```json
-{
-  "_id": "507f1f77bcf86cd799439011",
-  "title": "Updated Course Title",
-  "description": "Updated description",
-  "rating": 4.8,
-  "updatedAt": "2025-11-20T11:00:00.000Z",
-  ...
-}
-```
+
 
 #### 5. Delete Course
 - **Endpoint:** `DELETE /api/courses/:id`
@@ -508,63 +333,17 @@ Authorization: Bearer <your-jwt-token>
   "completedLessons": 0
 }
 ```
-- **Response (201):**
-```json
-{
-  "_id": "507f1f77bcf86cd799439014",
-  "userId": "507f1f77bcf86cd799439015",
-  "courseId": "507f1f77bcf86cd799439011",
-  "progress": 0,
-  "completed": false,
-  "completedLessons": 0,
-  "createdAt": "2025-11-20T10:00:00.000Z",
-  "updatedAt": "2025-11-20T10:00:00.000Z"
-}
-```
 
 #### 2. Get My Enrollments
 - **Endpoint:** `GET /api/enrollments/me`
 - **Access:** Private (JWT required)
 - **Description:** Get current user's enrollments with course details
-- **Response (200):**
-```json
-[
-  {
-    "_id": "507f1f77bcf86cd799439014",
-    "userId": "507f1f77bcf86cd799439015",
-    "courseId": {
-      "_id": "507f1f77bcf86cd799439011",
-      "title": "Python for Beginners",
-      "description": "...",
-      "instructor": "Emma Thompson",
-      ...
-    },
-    "progress": 45,
-    "completed": false,
-    "completedLessons": 5,
-    "createdAt": "2025-11-20T10:00:00.000Z",
-    "updatedAt": "2025-11-20T10:00:00.000Z"
-  }
-]
-```
 
 #### 3. Get All Enrollments
 - **Endpoint:** `GET /api/enrollments`
 - **Access:** Private (JWT required)
 - **Description:** Get enrollments (students see their own, instructors see enrollments for their courses)
-- **Response (200):**
-```json
-[
-  {
-    "_id": "507f1f77bcf86cd799439014",
-    "userId": "507f1f77bcf86cd799439015",
-    "courseId": "507f1f77bcf86cd799439011",
-    "progress": 45,
-    "completed": false,
-    "completedLessons": 5
-  }
-]
-```
+
 
 #### 4. Update Enrollment
 - **Endpoint:** `PUT /api/enrollments/:id`
@@ -580,18 +359,6 @@ Authorization: Bearer <your-jwt-token>
   "completedLessons": 8
 }
 ```
-- **Response (200):**
-```json
-{
-  "_id": "507f1f77bcf86cd799439014",
-  "userId": "507f1f77bcf86cd799439015",
-  "courseId": "507f1f77bcf86cd799439011",
-  "progress": 75,
-  "completed": false,
-  "completedLessons": 8,
-  "updatedAt": "2025-11-20T11:00:00.000Z"
-}
-```
 
 #### 5. Delete Enrollment
 - **Endpoint:** `DELETE /api/enrollments/:id`
@@ -599,14 +366,7 @@ Authorization: Bearer <your-jwt-token>
 - **Description:** Remove an enrollment
 - **URL Parameters:**
   - `id` - Enrollment MongoDB ObjectId
-- **Response (200):**
-```json
-{
-  "message": "Enrollment deleted successfully"
-}
-```
 
----
 
 ### Review Endpoints
 
@@ -622,18 +382,7 @@ Authorization: Bearer <your-jwt-token>
   "comment": "Excellent course! Very well explained."
 }
 ```
-- **Response (200/201):**
-```json
-{
-  "_id": "507f1f77bcf86cd799439016",
-  "courseId": "507f1f77bcf86cd799439011",
-  "userId": "507f1f77bcf86cd799439015",
-  "rating": 5,
-  "comment": "Excellent course! Very well explained.",
-  "createdAt": "2025-11-20T10:00:00.000Z",
-  "updatedAt": "2025-11-20T10:00:00.000Z"
-}
-```
+
 
 #### 2. Get Course Reviews
 - **Endpoint:** `GET /api/reviews/course/:courseId`
@@ -641,24 +390,7 @@ Authorization: Bearer <your-jwt-token>
 - **Description:** Get all reviews for a specific course
 - **URL Parameters:**
   - `courseId` - Course MongoDB ObjectId
-- **Response (200):**
-```json
-[
-  {
-    "_id": "507f1f77bcf86cd799439016",
-    "courseId": "507f1f77bcf86cd799439011",
-    "userId": {
-      "_id": "507f1f77bcf86cd799439015",
-      "name": "John Doe",
-      "email": "john@example.com"
-    },
-    "rating": 5,
-    "comment": "Excellent course!",
-    "createdAt": "2025-11-20T10:00:00.000Z",
-    "updatedAt": "2025-11-20T10:00:00.000Z"
-  }
-]
-```
+
 
 #### 3. Get User Review for Course
 - **Endpoint:** `GET /api/reviews/user/:courseId`
@@ -666,18 +398,7 @@ Authorization: Bearer <your-jwt-token>
 - **Description:** Get current user's review for a specific course
 - **URL Parameters:**
   - `courseId` - Course MongoDB ObjectId
-- **Response (200):**
-```json
-{
-  "_id": "507f1f77bcf86cd799439016",
-  "courseId": "507f1f77bcf86cd799439011",
-  "userId": "507f1f77bcf86cd799439015",
-  "rating": 5,
-  "comment": "Excellent course!",
-  "createdAt": "2025-11-20T10:00:00.000Z",
-  "updatedAt": "2025-11-20T10:00:00.000Z"
-}
-```
+
 
 #### 4. Delete Review
 - **Endpoint:** `DELETE /api/reviews/:id`
@@ -685,14 +406,7 @@ Authorization: Bearer <your-jwt-token>
 - **Description:** Delete a review (only the creator can delete)
 - **URL Parameters:**
   - `id` - Review MongoDB ObjectId
-- **Response (200):**
-```json
-{
-  "message": "Review deleted successfully"
-}
-```
 
----
 
 ### Health Check Endpoint
 
@@ -897,13 +611,6 @@ or
   - Enrollment model collaboration
   - Frontend-backend integration support
 
-**Collaborative Work:**
-- All team members contributed to:
-  - Database schema design and refinement
-  - API endpoint planning and documentation
-  - Testing and debugging
-  - Code reviews and quality assurance
-
 ---
 
 ## Technical Challenges and Solutions
@@ -941,14 +648,6 @@ or
 - Created utility functions to recalculate course statistics
 - Ensured progress updates are synchronized with lesson completion
 
-### Challenge 5: Database Seeding and Data Consistency
-**Problem:** Seeding the database with realistic data while maintaining referential integrity between users, courses, and enrollments.
-
-**Solution:**
-- Created sequential seeding scripts that run in order (users → courses → enrollments)
-- Implemented `seedAll.js` to orchestrate all seed scripts
-- Added error handling to ensure data consistency
-- Used MongoDB ObjectId references to maintain relationships
 
 ### Challenge 6: Frontend-Backend Integration
 **Problem:** Replacing mock data with real API calls while maintaining smooth user experience and proper error handling.
@@ -959,15 +658,8 @@ or
 - Added user feedback (toasts, alerts) for API operations
 - Maintained backward compatibility during migration
 
-### Challenge 7: CORS and Deployment Configuration
-**Problem:** Configuring CORS for local development and production, ensuring frontend can communicate with deployed backend.
 
-**Solution:**
-- Configured CORS middleware to allow requests from frontend origin
-- Set up environment variables for different deployment environments
-- Created separate configuration for local development and production
-
-### Challenge 8: Password Security
+### Challenge 7: Password Security
 **Problem:** Ensuring user passwords are stored securely and cannot be retrieved in plain text.
 
 **Solution:**
@@ -993,17 +685,6 @@ or
 - ✅ Profile management (update profile, change password)
 - ✅ Database seeding for development and testing
 
-### Future Enhancements (Not Implemented)
-- Email verification for user registration
-- Password reset functionality
-- Course search and advanced filtering
-- Course categories management
-- Instructor analytics dashboard
-- Student certificates upon course completion
-- Discussion forums for courses
-- File uploads for course materials
-- Payment integration (if applicable)
-- Admin panel for system management
 
 ---
 
@@ -1080,104 +761,6 @@ WEBPROJECT/
 
 ---
 
-## Environment Variables
 
-### Backend (.env)
-```env
-MONGO_URI=mongodb+srv://username:password@cluster.mongodb.net/ctm?retryWrites=true&w=majority
-PORT=5000
-JWT_SECRET=your-super-secret-jwt-key
-NODE_ENV=development
-```
 
-### Frontend (.env) - Optional
-```env
-VITE_API_BASE_URL=http://localhost:5000/api
-```
 
----
-
-## Scripts
-
-### Backend Scripts
-```bash
-npm start              # Start production server
-npm run dev           # Start development server with auto-reload
-npm run seed:all      # Seed all data (users, courses, enrollments)
-npm run seed:users    # Seed users only
-npm run seed:courses  # Seed courses only
-npm run seed:enrollments # Seed enrollments only
-npm run recalculate:stats # Recalculate course statistics
-```
-
-### Frontend Scripts
-```bash
-npm run dev      # Start development server
-npm run build    # Build for production
-npm run preview  # Preview production build
-npm run lint     # Run ESLint
-```
-
----
-
-## Testing the API
-
-### Using cURL
-
-**Register User:**
-```bash
-curl -X POST http://localhost:5000/api/auth/register \
-  -H "Content-Type: application/json" \
-  -d '{"name":"Test User","email":"test@example.com","password":"password123","role":"student"}'
-```
-
-**Login:**
-```bash
-curl -X POST http://localhost:5000/api/auth/login \
-  -H "Content-Type: application/json" \
-  -d '{"email":"test@example.com","password":"password123"}'
-```
-
-**Get All Courses:**
-```bash
-curl http://localhost:5000/api/courses
-```
-
-**Create Course (with token):**
-```bash
-curl -X POST http://localhost:5000/api/courses \
-  -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -d '{"title":"New Course","description":"Course description","instructor":"Instructor Name","category":"Programming","level":"Beginner","duration":"10h"}'
-```
-
----
-
-## Deployment Notes
-
-### Backend Deployment (Render/Cyclic/Heroku)
-1. Set environment variables in deployment platform
-2. Ensure MongoDB Atlas allows connections from deployment IP
-3. Update CORS settings to allow frontend domain
-4. Set `NODE_ENV=production`
-
-### Frontend Deployment (Vercel/Netlify)
-1. Update API base URL to production backend URL
-2. Set environment variables if needed
-3. Ensure CORS is configured on backend for frontend domain
-
----
-
-## License
-
-This project is developed for educational purposes as part of CSC443 - Fall 2025.
-
----
-
-## Contact & Support
-
-For questions or issues, please contact the development team or create an issue in the GitHub repository.
-
----
-
-**Last Updated:** November 2025
