@@ -1,5 +1,3 @@
-# Course Tutorial Management (CTM) System
-
 **CSC443 – Fall 2025 | Project Part 2: Full-Stack Application Integration**
 
 
@@ -558,17 +556,25 @@ or
 
 ### Application Screenshots
 
-*[Add screenshots or a GIF showcasing the final, fully functional application here]*
+### Application Screenshots
 
-**Suggested screenshots to include:**
-1. Homepage with featured courses
-2. Course listing page with filters
-3. Course details page
-4. Lesson viewer with video player
-5. Student enrollment dashboard
-6. Instructor course management page
-7. User profile page
-8. Login/Registration pages
+![Screenshot 1](https://github.com/user-attachments/assets/553bba17-5622-4ef0-a608-4eb5ba422c08)
+
+![Screenshot 2](https://github.com/user-attachments/assets/46a8c0ad-a85e-41a7-815b-e2e0b7820938)
+
+![Screenshot 3](https://github.com/user-attachments/assets/a7b88067-cdea-4c09-aaeb-f7f2673e0db4)
+
+![Screenshot 4](https://github.com/user-attachments/assets/d806f4c0-f349-4167-8cfa-b49c4ac6fd5f)
+
+![Screenshot 5](https://github.com/user-attachments/assets/039bcf35-0eab-4ae4-99ee-e0e8f2b2bfba)
+
+![Screenshot 6](https://github.com/user-attachments/assets/df8ab62a-6dba-4176-97e1-1152848d8182)
+
+![Screenshot 7](https://github.com/user-attachments/assets/4229150e-92f9-4877-a806-b091166ca5e6)
+
+![Screenshot 8](https://github.com/user-attachments/assets/e9664455-f45d-4a39-91ba-187355156c41)
+
+![Screenshot 9](https://github.com/user-attachments/assets/2edd0be4-5fae-4dd4-891e-a1d17e3b2f26)
 
 ---
 
